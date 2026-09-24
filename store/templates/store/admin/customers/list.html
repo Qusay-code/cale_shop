@@ -1,0 +1,174 @@
+{% extends "store/admin/base.html" %}
+
+{% block title %}العملاء | CALE Shop{% endblock %}
+
+{% block header_title %}إدارة العملاء{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>العملاء</h1>
+        <p>إدارة ومتابعة العملاء المسجلين في المتجر.</p>
+    </div>
+</div>
+
+
+<div class="filter-panel">
+
+    <form method="get" class="filter-form">
+
+        <div class="filter-search">
+            <label for="search">البحث</label>
+
+            <input
+                type="search"
+                id="search"
+                name="q"
+                value="{{ search_query }}"
+                class="form-control"
+                placeholder="ابحث باسم المستخدم أو البريد الإلكتروني..."
+            >
+        </div>
+
+        <div class="filter-actions">
+
+            <button type="submit" class="btn btn-secondary">
+                بحث
+            </button>
+
+            <a
+                href="{% url 'store:admin_customer_list' %}"
+                class="btn btn-light"
+            >
+                إعادة تعيين
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<div class="admin-panel-card">
+
+    <div class="panel-header">
+
+        <h2>قائمة العملاء</h2>
+
+        <span class="result-count">
+            {{ customers|length }} عميل
+        </span>
+
+    </div>
+
+
+    {% if customers %}
+
+    <div class="table-wrapper">
+
+        <table class="admin-table">
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>اسم المستخدم</th>
+                    <th>البريد الإلكتروني</th>
+                    <th>عدد الطلبات</th>
+                    <th>تاريخ التسجيل</th>
+                    <th>الحالة</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for customer in customers %}
+
+                <tr>
+
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+
+
+                    <td>
+                        <strong class="customer-name">
+                            {{ customer.username }}
+                        </strong>
+                    </td>
+
+
+                    <td>
+                        {% if customer.email %}
+                            {{ customer.email }}
+                        {% else %}
+                            <span class="text-muted">
+                                غير متوفر
+                            </span>
+                        {% endif %}
+                    </td>
+
+
+                    <td>
+                        <span class="order-count">
+                            {{ customer.order_count }}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        {{ customer.date_joined|date:"Y-m-d H:i" }}
+                    </td>
+
+
+                    <td>
+
+                        {% if customer.is_active %}
+
+                            <span class="status-badge status-active">
+                                نشط
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-badge status-inactive">
+                                غير نشط
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <div class="empty-icon">👥</div>
+
+        <h3>لا يوجد عملاء</h3>
+
+        <p>
+            لم يتم العثور على عملاء مطابقين للبحث.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

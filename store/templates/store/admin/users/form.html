@@ -1,0 +1,75 @@
+{% extends "store/admin/base.html" %}
+
+{% block title %}إنشاء حساب موظف | CALE Shop{% endblock %}
+{% block header_title %}إنشاء حساب موظف{% endblock %}
+
+{% block content %}
+<div class="page-header staff-page-header">
+    <div>
+        <h1>إنشاء حساب موظف</h1>
+        <p>أدخل اسم المستخدم وكلمة المرور، ثم اختر دورًا واحدًا أو أكثر.</p>
+    </div>
+</div>
+
+<div class="staff-form-layout">
+    <section class="admin-panel-card staff-form-card">
+        <div class="panel-header"><h2>بيانات الحساب والصلاحيات</h2></div>
+        <div class="staff-form-body">
+            {% if not roles_available %}
+            <div class="staff-setup-notice">
+                لم تُجهّز أدوار الإدارة بعد. شغّل الأمر <code>python manage.py setup_roles</code> ثم أعد تحميل الصفحة.
+            </div>
+            {% endif %}
+
+            <form method="post" class="staff-account-form" data-original-role-ids="">
+                {% csrf_token %}
+                <label class="role-confirm-check"><input type="checkbox" name="confirm_roles" id="confirm-roles" value="yes"> أؤكد الصلاحيات المختارة</label>
+                {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+                {% for field in form %}
+                    <div class="form-group{% if field.name == 'groups' %} form-group-full{% endif %}">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}<small class="form-help">{{ field.help_text }}</small>{% endif %}
+                        {% if field.errors %}<div class="field-errors">{{ field.errors }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+                <div class="staff-form-actions">
+                    <button class="btn btn-primary" type="submit"{% if not roles_available %} disabled{% endif %}>إنشاء الحساب</button>
+                    <a class="btn btn-light" href="{% url 'store:admin_user_list' %}">إلغاء</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <aside class="staff-role-help">
+        <span class="staff-role-help-icon" aria-hidden="true">♙</span>
+        <h2>حول الأدوار</h2>
+        <p>يمكن إسناد عدة مجموعات للحساب لجمع صلاحياتها.</p>
+        <ul>
+            <li><strong>Product Manager</strong><span>إدارة المنتجات والمخزون.</span></li>
+            <li><strong>Order Manager</strong><span>عرض الطلبات وتحديث حالتها.</span></li>
+            <li><strong>Customer Manager</strong><span>لوحة الملخص وقائمة العملاء.</span></li>
+            <li><strong>Super Admin</strong><span>جميع صلاحيات إدارة متجر CALE.</span></li>
+        </ul>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(() => {
+    const form = document.querySelector('.staff-account-form');
+    const roleContainer = form?.querySelector('.role-options');
+    const confirmation = form?.querySelector('#confirm-roles');
+    if (!form || !roleContainer || !confirmation) return;
+    form.addEventListener('submit', (event) => {
+        if (confirmation.checked) return;
+        event.preventDefault();
+        if (window.confirm('تأكيد منح الأدوار المحددة لهذا الموظف؟')) {
+            confirmation.checked = true;
+            form.submit();
+        }
+    });
+})();
+</script>
+{% endblock %}

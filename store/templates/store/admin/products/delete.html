@@ -1,0 +1,19 @@
+{% extends "store/admin/base.html" %}
+{% block title %}حذف المنتج | CALE Shop{% endblock %}
+{% block header_title %}حذف المنتج{% endblock %}
+{% block content %}
+<div class="delete-container">
+<div class="admin-panel-card delete-card">
+    <div class="delete-icon">⚠</div>
+    <h1>حذف المنتج</h1>
+    <p>هل أنت متأكد أنك تريد حذف المنتج:</p>
+    <strong class="delete-product-name">{{ product.name }}</strong>
+    <p class="delete-warning">هذا الإجراء لا يمكن التراجع عنه.</p>
+    <form method="post" class="delete-actions">
+        {% csrf_token %}
+        <a href="{% url 'store:admin_product_list' %}" class="btn btn-light">إلغاء</a>
+        <button type="submit" class="btn btn-danger">نعم، حذف المنتج</button>
+    </form>
+</div>
+</div>
+{% endblock %}

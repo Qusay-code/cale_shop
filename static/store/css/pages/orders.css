@@ -1,0 +1,174 @@
+/* =========================================================
+   Customer Orders Page
+   ========================================================= */
+
+.orders-page {
+    padding: 55px 0 80px;
+}
+
+.orders-header {
+    margin-bottom: 35px;
+}
+
+.orders-header .section-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--accent-color);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.orders-header h1 {
+    margin: 0 0 10px;
+    font-size: 2.3rem;
+}
+
+.orders-header p {
+    margin: 0;
+    color: var(--muted-color);
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-card {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 25px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.order-label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--muted-color);
+    font-size: 0.85rem;
+}
+
+.order-card-header h2 {
+    margin: 0;
+    color: var(--accent-color);
+    font-size: 1.5rem;
+}
+
+.order-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 15px;
+    border-radius: 20px;
+    background: #f5eee9;
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.order-card-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.order-card-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.order-card-info span {
+    color: var(--muted-color);
+    font-size: 0.85rem;
+}
+
+.order-card-info strong {
+    font-size: 0.95rem;
+}
+
+.order-card-footer {
+    padding-top: 18px;
+    border-top: 1px solid var(--border-color);
+}
+
+.order-details-button,
+.orders-shop-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 20px;
+    border-radius: 10px;
+    background: #a85d32;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.order-details-button:hover,
+.orders-shop-button:hover {
+    background: #8f4d29;
+    transform: translateY(-1px);
+}
+
+.orders-empty {
+    padding: 70px 30px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+}
+
+.orders-empty-icon {
+    margin-bottom: 15px;
+    font-size: 3rem;
+}
+
+.orders-empty h2 {
+    margin: 0 0 10px;
+}
+
+.orders-empty p {
+    margin: 0 0 25px;
+    color: var(--muted-color);
+}
+
+@media (max-width: 700px) {
+    .orders-page {
+        padding: 40px 0 55px;
+    }
+
+    .orders-header h1 {
+        font-size: 1.9rem;
+    }
+
+    .order-card {
+        padding: 20px;
+    }
+
+    .order-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .order-card-info {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .order-details-button {
+        width: 100%;
+    }
+}

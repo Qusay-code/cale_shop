@@ -1,0 +1,141 @@
+{% extends "store/base.html" %}
+
+{% block title %}المتجر | CALE Shop{% endblock %}
+
+{% block content %}
+
+<section class="shop-page">
+
+    <div class="container">
+
+        <div class="shop-header">
+            <span class="section-eyebrow">CALE SHOP</span>
+
+            <h1>المتجر</h1>
+
+            <p>
+                اكتشف مجموعتنا من الكيك والحلويات.
+            </p>
+        </div>
+
+        <div class="shop-products">
+
+            {% for product in products %}
+
+                <article class="shop-product-card">
+
+                    <div class="shop-product-image">
+
+                        {% if product.image %}
+                            <img
+                                src="{{ product.image.url }}"
+                                alt="{{ product.name }}"
+                            >
+                        {% else %}
+                            <div class="shop-product-placeholder">
+                                🍰
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="shop-product-content">
+
+                        <h2>{{ product.name }}</h2>
+
+                        {% if product.description %}
+                            <p>{{ product.description }}</p>
+                        {% endif %}
+
+                        <div class="shop-product-footer">
+
+    <div class="shop-product-price-stock">
+
+        <strong>
+            {{ product.price }} د.ل
+        </strong>
+
+        {% if product.stock > 0 %}
+    <span class="shop-stock available">
+        متوفر — {{ product.stock }} قطعة
+    </span>
+{% else %}
+
+            <span class="shop-stock unavailable">
+                غير متوفر
+            </span>
+        {% endif %}
+
+    </div>
+
+    {% if product.stock > 0 %}
+
+        <form
+            method="post"
+            action="{% url 'store:add_cart_item' product.id %}"
+            class="shop-add-cart-form"
+        >
+            {% csrf_token %}
+
+            <div class="shop-quantity-control">
+
+    <label for="quantity-{{ product.id }}">
+        الكمية
+    </label>
+
+    <input
+        type="number"
+        id="quantity-{{ product.id }}"
+        name="quantity"
+        value="1"
+        min="1"
+        max="{{ product.stock }}"
+        required
+    >
+
+</div>
+
+            <button
+                type="submit"
+                class="shop-add-cart-button"
+            >
+                🛒 أضف إلى السلة
+            </button>
+
+        </form>
+
+    {% else %}
+
+        <span class="shop-out-of-stock-button">
+            غير متوفر حاليًا
+        </span>
+
+    {% endif %}
+
+</div>
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="shop-empty">
+                    <div class="shop-empty-icon">🍰</div>
+
+                    <h2>لا توجد منتجات حاليًا</h2>
+
+                    <p>
+                        سيتم إضافة المنتجات قريبًا.
+                    </p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

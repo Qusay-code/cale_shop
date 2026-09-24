@@ -1,0 +1,245 @@
+{% extends "store/admin/base.html" %}
+
+{% block title %}الطلبات | CALE Shop{% endblock %}
+
+{% block header_title %}إدارة الطلبات{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>الطلبات</h1>
+
+        <p>
+            إدارة طلبات العملاء ومتابعة حالتها.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="filter-panel">
+
+    <form method="get" class="filter-form">
+
+        <div class="filter-search">
+
+            <label for="search">
+                البحث
+            </label>
+
+            <input
+                type="search"
+                id="search"
+                name="q"
+                value="{{ search_query }}"
+                class="form-control"
+                placeholder="رقم الطلب، اسم العميل، اسم المستخدم أو الهاتف"
+            >
+
+        </div>
+
+
+        <div class="filter-status">
+
+            <label for="status">
+                حالة الطلب
+            </label>
+
+            <select
+                id="status"
+                name="status"
+                class="form-control"
+            >
+
+                <option
+                    value=""
+                    {% if not selected_status %}selected{% endif %}
+                >
+                    جميع الطلبات
+                </option>
+
+                {% for value, label in status_choices %}
+
+                    <option
+                        value="{{ value }}"
+                        {% if selected_status == value %}selected{% endif %}
+                    >
+                        {{ label }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="filter-actions">
+
+            <button
+                type="submit"
+                class="btn btn-secondary"
+            >
+                بحث
+            </button>
+
+            <a
+                href="{% url 'store:admin_order_list' %}"
+                class="btn btn-light"
+            >
+                إعادة تعيين
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<div class="admin-panel-card">
+
+    <div class="panel-header">
+
+        <h2>
+            قائمة الطلبات
+        </h2>
+
+        <span class="result-count">
+            {{ orders|length }} طلب
+        </span>
+
+    </div>
+
+
+    {% if orders %}
+
+        <div class="table-wrapper">
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            رقم الطلب
+                        </th>
+
+                        <th>
+                            العميل
+                        </th>
+
+                        <th>
+                            الاسم
+                        </th>
+
+                        <th>
+                            الهاتف
+                        </th>
+
+                        <th>
+                            الحالة
+                        </th>
+
+                        <th>
+                            طريقة الدفع
+                        </th>
+
+                        <th>
+                            تاريخ الطلب
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for order in orders %}
+
+                        <tr>
+
+                            <td>
+
+                                <a
+                                    href="{% url 'store:admin_order_detail' order.id %}"
+                                    class="order-number"
+                                >
+                                    #{{ order.id }}
+                                </a>
+
+                            </td>
+
+
+                            <td>
+                                {{ order.user.username }}
+                            </td>
+
+
+                            <td>
+                                {{ order.full_name }}
+                            </td>
+
+
+                            <td>
+                                {{ order.phone }}
+                            </td>
+
+
+                            <td>
+
+                                <span class="status-badge">
+                                    {{ order.get_status_display }}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+                                {{ order.get_payment_method_display }}
+                            </td>
+
+
+                            <td>
+                                {{ order.created_at|date:"Y-m-d H:i" }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                📋
+            </div>
+
+            <h3>
+                لا توجد طلبات
+            </h3>
+
+            <p>
+                لم يتم العثور على طلبات مطابقة للبحث أو الفلترة.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

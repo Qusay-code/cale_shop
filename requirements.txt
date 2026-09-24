@@ -1,0 +1,10 @@
+# Core framework — Django 5.2 LTS security patch line.
+Django==5.2.17
+
+# Database / media
+mysqlclient>=2.2,<3
+Pillow>=11.3,<13
+
+# Environment / password hashing
+python-dotenv==1.2.3
+argon2-cffi==25.1.0

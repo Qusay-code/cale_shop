@@ -1,0 +1,54 @@
+{% extends "store/admin/base.html" %}
+
+{% block title %}سجل تغييرات الإدارة | CALE Shop{% endblock %}
+{% block header_title %}سجل تغييرات الإدارة{% endblock %}
+
+{% block content %}
+<div class="page-header staff-page-header">
+    <div>
+        <h1>سجل تغييرات الإدارة</h1>
+        <p>عمليات إنشاء حسابات الموظفين وتعديل بياناتهم وصلاحياتهم.</p>
+    </div>
+    <a class="btn btn-light" href="{% url 'store:admin_user_list' %}">حسابات الموظفين</a>
+</div>
+
+<section class="admin-panel-card staff-users-panel">
+    <form method="get" class="staff-filter-form audit-filter-form">
+        <div><label for="audit-search">ابحث باسم الموظف أو المنفذ</label><input id="audit-search" class="form-control" type="search" name="q" value="{{ search_query }}" maxlength="100"></div>
+        <div class="staff-filter-actions"><button class="btn btn-secondary" type="submit">بحث</button><a class="btn btn-light" href="{% url 'store:admin_audit_log' %}">مسح</a></div>
+    </form>
+    <div class="table-wrapper">
+        <table class="admin-table audit-log-table">
+            <thead><tr><th>التاريخ</th><th>نفّذ بواسطة</th><th>العملية</th><th>الحساب المستهدف</th><th>التفاصيل</th></tr></thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>{{ entry.actor.username|default:"حساب محذوف" }}</td>
+                    <td>{% if entry.action == 'staff_created' %}إنشاء حساب{% else %}تعديل حساب{% endif %}</td>
+                    <td>{{ entry.target_username }}</td>
+                    <td class="audit-details">
+                        {% if entry.action == 'staff_created' %}
+                            الأدوار: {{ entry.details.roles|join:", " }}
+                        {% else %}
+                            {% if entry.details.username_changed %}تم تغيير اسم المستخدم. {% endif %}
+                            {% if entry.details.password_changed %}تم تعيين كلمة مرور جديدة. {% endif %}
+                            {% if entry.details.roles_before != entry.details.roles_after %}الأدوار: {{ entry.details.roles_before|join:", " }} ← {{ entry.details.roles_after|join:", " }}{% else %}لم تتغير الأدوار.{% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5"><div class="staff-empty">لا توجد تغييرات مطابقة.</div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if page_obj.has_other_pages %}
+    <nav class="staff-pagination" aria-label="صفحات سجل الإدارة">
+        {% if page_obj.has_previous %}<a class="btn btn-light" href="?q={{ search_query|urlencode }}&page={{ page_obj.previous_page_number }}">السابق</a>{% endif %}
+        <span>صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a class="btn btn-light" href="?q={{ search_query|urlencode }}&page={{ page_obj.next_page_number }}">التالي</a>{% endif %}
+    </nav>
+    {% endif %}
+</section>
+{% endblock %}

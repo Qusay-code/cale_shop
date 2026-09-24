@@ -1,0 +1,70 @@
+{% extends "store/admin/base.html" %}
+
+{% block title %}حسابات الموظفين | CALE Shop{% endblock %}
+{% block header_title %}حسابات الموظفين{% endblock %}
+
+{% block content %}
+<div class="page-header staff-page-header">
+    <div>
+        <h1>حسابات الموظفين</h1>
+        <p>أنشئ حسابات فريق العمل وراجع الأدوار الممنوحة لكل حساب.</p>
+    </div>
+    {% if can_manage_accounts %}<a class="btn btn-light" href="{% url 'store:admin_audit_log' %}">سجل تغييرات الإدارة</a>{% endif %}
+    {% if perms.auth.add_user %}
+    <a class="btn btn-primary" href="{% url 'store:admin_user_create' %}">＋ إنشاء حساب موظف</a>
+    {% endif %}
+</div>
+
+<section class="admin-panel-card staff-users-panel">
+    <div class="panel-header">
+        <h2>فريق الإدارة</h2>
+        <span>{{ page_obj.paginator.count }} حساب</span>
+    </div>
+    <form method="get" class="staff-filter-form">
+        <div><label for="staff-search">بحث باسم المستخدم</label><input id="staff-search" class="form-control" type="search" name="q" value="{{ search_query }}" maxlength="100"></div>
+        <div><label for="staff-role">الدور</label><select id="staff-role" class="form-control" name="role"><option value="">كل الأدوار</option>{% for role in available_roles %}<option value="{{ role.name }}"{% if role_filter == role.name %} selected{% endif %}>{{ role.name }}</option>{% endfor %}</select></div>
+        <div><label for="staff-sort">الترتيب</label><select id="staff-sort" class="form-control" name="sort"><option value="newest"{% if sort == 'newest' %} selected{% endif %}>الأحدث</option><option value="oldest"{% if sort == 'oldest' %} selected{% endif %}>الأقدم</option><option value="username"{% if sort == 'username' %} selected{% endif %}>اسم المستخدم تصاعديًا</option><option value="username_desc"{% if sort == 'username_desc' %} selected{% endif %}>اسم المستخدم تنازليًا</option></select></div>
+        <div class="staff-filter-actions"><button class="btn btn-secondary" type="submit">تطبيق</button><a class="btn btn-light" href="{% url 'store:admin_user_list' %}">مسح</a></div>
+    </form>
+    <div class="table-wrapper">
+        <table class="admin-table staff-users-table">
+            <thead>
+                <tr><th>اسم المستخدم</th><th>الأدوار</th><th>تاريخ الإنشاء</th><th>الحالة</th></tr>
+            </thead>
+            <tbody>
+                {% for staff_user in staff_users %}
+                <tr>
+                    <td class="staff-username">
+                        {% if can_manage_accounts %}<a href="{% url 'store:admin_account_update' staff_user.pk %}">{{ staff_user.username }}</a>{% else %}{{ staff_user.username }}{% endif %}
+                    </td>
+                    <td>
+                        <div class="staff-role-list">
+                            {% if staff_user.is_superuser %}<span class="staff-role-chip role-root">مدير Django فائق</span>{% endif %}
+                            {% for group in staff_user.groups.all %}
+                                <span class="staff-role-chip{% if group.name == 'Super Admin' %} role-super-admin{% endif %}">{{ group.name }}</span>
+                            {% empty %}
+                                {% if not staff_user.is_superuser %}<span class="staff-role-chip role-none">بلا مجموعة</span>{% endif %}
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td>{{ staff_user.date_joined|date:"Y/m/d" }}</td>
+                    <td>
+                        {% if staff_user.is_active %}<span class="staff-state is-active">نشط</span>
+                        {% else %}<span class="staff-state is-inactive">موقوف</span>{% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4"><div class="staff-empty">لا توجد حسابات موظفين حتى الآن.</div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if page_obj.has_other_pages %}
+    <nav class="staff-pagination" aria-label="صفحات حسابات الموظفين">
+        {% if page_obj.has_previous %}<a class="btn btn-light" href="?q={{ search_query|urlencode }}&role={{ role_filter|urlencode }}&sort={{ sort|urlencode }}&page={{ page_obj.previous_page_number }}">السابق</a>{% endif %}
+        <span>صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a class="btn btn-light" href="?q={{ search_query|urlencode }}&role={{ role_filter|urlencode }}&sort={{ sort|urlencode }}&page={{ page_obj.next_page_number }}">التالي</a>{% endif %}
+    </nav>
+    {% endif %}
+</section>
+{% endblock %}

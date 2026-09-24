@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="CALE Shop - متجر الكيك والحلويات">
+    <meta name="keywords" content="كيك, حلويات, CALE Shop">
+
+    <title>{% block title %}CALE Shop{% endblock %}</title>
+
+    <!-- Main Store CSS -->
+    <link rel="stylesheet" href="{% static 'store/css/store.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'store/css/theme.css' %}?v=2">
+    <script src="{% static 'store/js/theme.js' %}?v=1" defer></script>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<!-- =========================
+     Header
+========================= -->
+<header class="site-header">
+
+    <!-- شريط علوي -->
+    <div class="header-top">
+        <div class="container header-top-inner">
+
+            <div class="header-welcome">
+                🍰 أهلاً بك في CALE Shop
+            </div>
+
+            <div class="header-account">
+                {% if user.is_authenticated %}
+                    مرحبًا، {{ user.username }}
+                {% else %}
+                    <a href="{% url 'login' %}">
+                        تسجيل الدخول
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- الهيدر الرئيسي -->
+    <div class="header-main">
+
+        <div class="container header-main-inner">
+
+            <!-- الشعار -->
+            <div class="site-logo">
+
+                <a href="{% url 'store:home' %}">
+
+                    <span class="logo-main">
+                        CALE
+                    </span>
+
+                    <span class="logo-sub">
+                        SHOP
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- القائمة الرئيسية -->
+            <nav class="main-nav">
+
+                <a href="{% url 'store:home' %}">
+                    الرئيسية
+                </a>
+
+                <a href="{% url 'store:shop' %}">
+                    المتجر
+                </a>
+
+                <a href="{% url 'store:about' %}">
+                    من نحن
+                </a>
+
+            </nav>
+
+
+            <!-- الإجراءات -->
+            <div class="header-actions">
+
+                <!-- السلة -->
+                <a
+                    href="{% url 'store:cart' %}"
+                    class="header-action"
+                >
+                    <span class="action-icon">🛒</span>
+                    <span>السلة</span>
+                </a>
+                {% if user.is_authenticated %}
+
+                <a
+    href="{% url 'store:account' %}"
+    class="header-action"
+>
+    <span class="action-icon">👤</span>
+    <span>حسابي</span>
+</a>
+    <a
+        href="{% url 'store:customer_orders' %}"
+        class="header-action"
+    >
+        <span class="action-icon">📦</span>
+        <span>طلباتي</span>
+    </a>
+
+{% endif %}
+
+                {% if user.is_authenticated %}
+
+                    <!-- لوحة الإدارة للموظف فقط -->
+                    {% if perms.store.view_dashboard %}
+
+                        <a
+                            href="{% url 'store:admin_dashboard' %}"
+                            class="header-action"
+                        >
+                            <span class="action-icon">⚙</span>
+                            <span>الإدارة</span>
+                        </a>
+
+                    {% endif %}
+
+
+                    <!-- تسجيل الخروج -->
+                    <form
+                        method="post"
+                         action="{% url 'store:logout' %}"                    
+                         class="header-logout-form"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="header-action header-logout"
+                        >
+                            <span class="action-icon">⎋</span>
+                            <span>خروج</span>
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <!-- إنشاء حساب -->
+                    <a
+                        href="{% url 'store:register' %}"
+                        class="header-action"
+                    >
+                        <span class="action-icon">👤</span>
+                        <span>إنشاء حساب</span>
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     Messages
+========================= -->
+{% if messages %}
+    <div class="container messages-container">
+
+        {% for message in messages %}
+
+            <div class="site-message site-message-{{ message.tags }}">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    </div>
+{% endif %}
+
+
+<!-- =========================
+     Main Content
+========================= -->
+<main class="site-main">
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+<!-- =========================
+     Footer
+========================= -->
+<footer class="site-footer">
+
+    <div class="container footer-grid">
+
+        <div class="footer-brand">
+            <div class="footer-logo">CALE</div>
+
+            <p>
+                متجر CALE للحلويات والكيك،
+                نقدم لكم منتجات مميزة بجودة عالية.
+            </p>
+        </div>
+
+
+        <div class="footer-links">
+            <h3>روابط سريعة</h3>
+
+            <a href="{% url 'store:home' %}">
+                الرئيسية
+            </a>
+
+            <a href="{% url 'store:cart' %}">
+                سلة المشتريات
+            </a>
+
+            {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}">
+                    تسجيل الدخول
+                </a>
+
+                <a href="{% url 'store:register' %}">
+                    إنشاء حساب
+                </a>
+            {% endif %}
+        </div>
+
+
+        <div class="footer-contact">
+            <h3>تواصل معنا</h3>
+
+            <p>📞 الهاتف: —</p>
+            <p>📍 ليبيا</p>
+            <p>✉ البريد الإلكتروني: —</p>
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p>
+                © {% now "Y" %} CALE Shop — جميع الحقوق محفوظة
+            </p>
+        </div>
+    </div>
+
+</footer>
+
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

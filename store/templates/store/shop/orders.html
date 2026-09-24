@@ -1,0 +1,132 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block title %}طلباتي | CALE Shop{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'store/css/pages/orders.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="orders-page">
+    <div class="container">
+
+        <div class="orders-header">
+            <span class="section-eyebrow">CALE SHOP</span>
+
+            <h1>
+                طلباتي
+            </h1>
+
+            <p>
+                جميع الطلبات التي قمت بإنشائها من حسابك.
+            </p>
+        </div>
+
+
+        {% if orders %}
+
+            <div class="orders-list">
+
+                {% for order in orders %}
+
+                    <article class="order-card">
+
+                        <div class="order-card-header">
+
+                            <div>
+                                <span class="order-label">
+                                    رقم الطلب
+                                </span>
+
+                                <h2>
+                                    #{{ order.id }}
+                                </h2>
+                            </div>
+
+                            <span class="order-status">
+                                {{ order.get_status_display }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="order-card-info">
+
+                            <div>
+                                <span>تاريخ الطلب</span>
+
+                                <strong>
+                                    {{ order.created_at|date:"Y-m-d H:i" }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>عدد المنتجات</span>
+
+                                <strong>
+                                    {{ order.items.all|length }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>طريقة الدفع</span>
+
+                                <strong>
+                                    {{ order.get_payment_method_display }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="order-card-footer">
+
+                            <a
+                                href="{% url 'store:order_success' order.id %}"
+                                class="order-details-button"
+                            >
+                                عرض تفاصيل الطلب
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="orders-empty">
+
+                <div class="orders-empty-icon">
+                    🛍️
+                </div>
+
+                <h2>
+                    لا توجد طلبات حتى الآن
+                </h2>
+
+                <p>
+                    لم تقم بإنشاء أي طلب بعد.
+                </p>
+
+                <a
+                    href="{% url 'store:home' %}"
+                    class="orders-shop-button"
+                >
+                    تصفح المتجر
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

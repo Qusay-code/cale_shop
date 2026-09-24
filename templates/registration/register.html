@@ -1,0 +1,256 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>إنشاء حساب | CALE Shop</title>
+
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}"><link rel="stylesheet" href="{% static 'store/css/theme.css' %}?v=2"><script src="{% static 'store/js/theme.js' %}?v=1" defer></script>
+</head>
+
+<body>
+
+<main class="auth-page">
+
+    <section class="auth-card register-card">
+
+        <!-- Logo -->
+        <div class="auth-logo">
+
+            <div class="logo-mark">
+                C
+            </div>
+
+            <div>
+                <h1>CALE Shop</h1>
+
+                <span>
+                    متجر الكيك والحلويات
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- Header -->
+        <div class="auth-header">
+
+            <h2>
+                إنشاء حساب جديد 🎂
+            </h2>
+
+            <p>
+                أنشئ حسابك واستمتع بتجربة تسوق أسهل وأسرع
+            </p>
+
+        </div>
+
+
+        <!-- General Errors -->
+        {% if form.non_field_errors %}
+
+            <div class="form-error">
+                {{ form.non_field_errors }}
+            </div>
+
+        {% endif %}
+
+
+        <!-- Register Form -->
+        <form method="post" class="auth-form">
+
+            {% csrf_token %}
+
+
+            <!-- Username -->
+            <div class="form-group">
+
+                <label for="{{ form.username.id_for_label }}">
+                    اسم المستخدم
+                </label>
+
+                {{ form.username }}
+
+                {% if form.username.errors %}
+
+                    <div class="field-error">
+                        {{ form.username.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Email -->
+            <div class="form-group">
+
+                <label for="{{ form.email.id_for_label }}">
+                    البريد الإلكتروني
+                </label>
+
+                {{ form.email }}
+
+                {% if form.email.errors %}
+
+                    <div class="field-error">
+                        {{ form.email.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Full Name -->
+            <div class="form-group">
+
+                <label for="{{ form.full_name.id_for_label }}">
+                    الاسم الثلاثي
+                </label>
+
+                {{ form.full_name }}
+
+                {% if form.full_name.errors %}
+
+                    <div class="field-error">
+                        {{ form.full_name.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Phone -->
+            <div class="form-group">
+
+                <label for="{{ form.phone.id_for_label }}">
+                    رقم الهاتف
+                </label>
+
+                {{ form.phone }}
+
+                {% if form.phone.errors %}
+
+                    <div class="field-error">
+                        {{ form.phone.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Address -->
+            <div class="form-group">
+
+                <label for="{{ form.address.id_for_label }}">
+                    العنوان
+                </label>
+
+                {{ form.address }}
+
+                {% if form.address.errors %}
+
+                    <div class="field-error">
+                        {{ form.address.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Password -->
+            <div class="form-group">
+
+                <label for="{{ form.password1.id_for_label }}">
+                    كلمة المرور
+                </label>
+
+                {{ form.password1 }}
+
+                {% if form.password1.errors %}
+
+                    <div class="field-error">
+                        {{ form.password1.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+
+                <label for="{{ form.password2.id_for_label }}">
+                    تأكيد كلمة المرور
+                </label>
+
+                {{ form.password2 }}
+
+                {% if form.password2.errors %}
+
+                    <div class="field-error">
+                        {{ form.password2.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- CAPTCHA -->
+            <div class="form-group">
+                {{ form.turnstile }}
+                {% if form.turnstile.errors %}
+                    <div class="field-error">{{ form.turnstile.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Submit -->
+            <button
+                type="submit"
+                class="login-button"
+            >
+                إنشاء الحساب
+            </button>
+
+        </form>
+
+
+        <!-- Login Link -->
+        <div class="auth-footer">
+
+            <span>
+                لديك حساب بالفعل؟
+            </span>
+
+            <a href="{% url 'login' %}">
+                تسجيل الدخول
+            </a>
+
+        </div>
+
+
+        <!-- Back to Store -->
+        <a
+            href="{% url 'store:home' %}"
+            class="back-home"
+        >
+            ← العودة إلى المتجر
+        </a>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

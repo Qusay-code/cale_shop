@@ -1,0 +1,343 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block title %}CALE Shop | المتجر{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-image">
+        <img
+            src="{% static 'store/img/hero/hero-1.jpg' %}"
+            alt="CALE Shop"
+        >
+    </div>
+
+    <div class="hero-content">
+
+        <span class="hero-eyebrow">
+            CALE SHOP
+        </span>
+
+        <h1>
+            لحظاتك الحلوة
+            تبدأ من هنا
+        </h1>
+
+        <p>
+            اكتشف تشكيلتنا من الكيك والحلويات
+            المصنوعة بعناية لتجعل كل مناسبة أكثر جمالًا.
+        </p>
+
+        <div class="hero-actions">
+
+            <a
+                href="#products"
+                class="hero-button primary"
+            >
+                تصفح المنتجات
+            </a>
+
+            <a
+                href="{% url 'store:cart' %}"
+                class="hero-button secondary"
+            >
+                🛒 سلة المشتريات
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="shop-content" id="products">
+
+<section class="shop-page">
+
+    <div class="container">
+
+        <!-- مقدمة المتجر -->
+        <div class="shop-intro">
+            <span class="shop-eyebrow">مرحبًا بك في</span>
+
+            <h1>
+                CALE Shop
+            </h1>
+
+            <p>
+                اكتشف تشكيلتنا من الكيك والحلويات
+                واختر ما يناسبك.
+            </p>
+        </div>
+
+
+        <!-- المنتجات -->
+<section class="products-section" id="products">
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-eyebrow">
+                        تشكيلتنا
+                    </span>
+
+                    <h2>
+                        منتجاتنا
+                    </h2>
+                </div>
+
+                <span class="products-count">
+                    {{ products|length }} منتج
+                </span>
+
+            </div>
+
+
+            {% if products %}
+
+                <div class="products-grid">
+
+                    {% for product in products %}
+
+                        <article class="product-card">
+
+                            <!-- صورة المنتج -->
+                            <div class="product-image-wrapper">
+
+                                {% if product.image %}
+
+                                    <img
+                                        src="{{ product.image.url }}"
+                                        alt="{{ product.name }}"
+                                        class="product-image"
+                                    >
+
+                                {% else %}
+
+                                    <div class="product-placeholder">
+                                        🍰
+                                    </div>
+
+                                {% endif %}
+
+                                {% if product.stock > 0 %}
+
+                                    <span class="product-status available">
+                                        متوفر
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="product-status unavailable">
+                                        غير متوفر
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- معلومات المنتج -->
+                            <div class="product-info">
+
+                                <h3 class="product-name">
+                                    {{ product.name }}
+                                </h3>
+
+
+                                {% if product.description %}
+
+                                    <p class="product-description">
+                                        {{ product.description }}
+                                    </p>
+
+                                {% endif %}
+
+
+                                <div class="product-meta">
+
+                                    <div class="product-price">
+                                        {{ product.price|floatformat:2 }}
+                                        <span>د.ل</span>
+                                    </div>
+
+                                    <div class="product-stock">
+                                        المخزون: {{ product.stock }}
+                                    </div>
+
+                                </div>
+
+
+                                {% if product.stock > 0 %}
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'store:add_cart_item' product.id %}"
+                                        class="add-cart-form"
+                                    >
+
+                                        {% csrf_token %}
+
+                                        <div class="quantity-control">
+
+                                            <label for="quantity-{{ product.id }}">
+                                                الكمية
+                                            </label>
+
+                                            <input
+                                                id="quantity-{{ product.id }}"
+                                                type="number"
+                                                name="quantity"
+                                                value="1"
+                                                min="1"
+                                                max="{{ product.stock }}"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <button
+                                            type="submit"
+                                            class="add-cart-button"
+                                        >
+                                            أضف إلى السلة
+                                        </button>
+
+                                    </form>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        class="add-cart-button disabled"
+                                        disabled
+                                    >
+                                        غير متوفر حاليًا
+                                    </button>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-products">
+
+                    <div class="empty-products-icon">
+                        🍰
+                    </div>
+
+                    <h3>
+                        لا توجد منتجات حاليًا
+                    </h3>
+
+                    <p>
+                        سيتم إضافة المنتجات قريبًا.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     Why CALE Shop
+========================= -->
+
+<section class="why-cale">
+
+    <div class="container">
+
+        <div class="why-cale-heading">
+
+            <span>
+                CALE SHOP
+            </span>
+
+            <h2>
+                لماذا تختارنا؟
+            </h2>
+
+            <p>
+                نهتم بالتفاصيل الصغيرة لتكون تجربتك أجمل.
+            </p>
+
+        </div>
+
+
+        <div class="why-cale-grid">
+
+            <div class="why-cale-card">
+
+                <div class="why-cale-icon">
+                    🍰
+                </div>
+
+                <h3>
+                    منتجات مميزة
+                </h3>
+
+                <p>
+                    تشكيلة من الكيك والحلويات
+                    لتناسب مختلف المناسبات.
+                </p>
+
+            </div>
+
+
+            <div class="why-cale-card">
+
+                <div class="why-cale-icon">
+                    ✨
+                </div>
+
+                <h3>
+                    جودة وعناية
+                </h3>
+
+                <p>
+                    نهتم بتقديم المنتجات
+                    بشكل أنيق ومميز.
+                </p>
+
+            </div>
+
+
+            <div class="why-cale-card">
+
+                <div class="why-cale-icon">
+                    🛍️
+                </div>
+
+                <h3>
+                    طلب سهل وسريع
+                </h3>
+
+                <p>
+                    اختر منتجاتك وأضفها إلى السلة
+                    وأكمل طلبك بسهولة.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

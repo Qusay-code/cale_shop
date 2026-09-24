@@ -1,0 +1,173 @@
+{% extends "store/base.html" %}
+
+{% block title %}إتمام الطلب | CALE Shop{% endblock %}
+
+{% block content %}
+
+<section class="checkout-page">
+ <div class="container">
+    <div class="checkout-header">
+        <span class="section-eyebrow">CALE SHOP</span>
+        <h1>إتمام الطلب</h1>
+        <p>أكمل بيانات التوصيل لتأكيد طلبك.</p>
+    </div>
+
+
+    <div class="checkout-layout">
+
+        <!-- معلومات التوصيل -->
+        <section class="checkout-card">
+
+            <div class="checkout-card-header">
+                <h2>معلومات التوصيل</h2>
+                <p>تأكد من صحة بيانات التوصيل قبل تأكيد الطلب.</p>
+            </div>
+
+            <form method="post" class="checkout-form">
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    {{ form.full_name.label_tag }}
+                    {{ form.full_name }}
+
+                    {% if form.full_name.errors %}
+                        <div class="field-error">
+                            {{ form.full_name.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.phone.label_tag }}
+                    {{ form.phone }}
+
+                    {% if form.phone.errors %}
+                        <div class="field-error">
+                            {{ form.phone.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+
+                    {% if form.address.errors %}
+                        <div class="field-error">
+                            {{ form.address.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.notes.label_tag }}
+                    {{ form.notes }}
+
+                    {% if form.notes.errors %}
+                        <div class="field-error">
+                            {{ form.notes.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.payment_method.label_tag }}
+                    {{ form.payment_method }}
+
+                    {% if form.payment_method.errors %}
+                        <div class="field-error">
+                            {{ form.payment_method.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="checkout-submit">
+                    تأكيد الطلب
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- ملخص السلة -->
+        <aside class="checkout-summary">
+
+            <div class="checkout-card-header">
+                <h2>ملخص الطلب</h2>
+                <p>{{ cart_items|length }} منتج في السلة</p>
+            </div>
+
+            <div class="checkout-items">
+
+                {% for item in cart_items %}
+
+                    <article class="checkout-item">
+
+                        <div class="checkout-item-image">
+
+                            {% if item.product.image %}
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                >
+                            {% else %}
+                                <div class="checkout-item-placeholder">
+                                    CALE
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="checkout-item-info">
+
+                            <h3>
+                                {{ item.product.name }}
+                            </h3>
+
+                            <p>
+                                الكمية: {{ item.quantity }}
+                            </p>
+
+                            <strong>
+                                {{ item.product.price|floatformat:2 }} د.ل
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="checkout-summary-footer">
+
+    <div class="checkout-total">
+        <span>إجمالي الطلب</span>
+
+        <strong>
+            {{ cart_total|floatformat:2 }} د.ل
+        </strong>
+    </div>
+
+    <a href="{% url 'store:cart' %}" class="checkout-back">
+        ← العودة إلى السلة
+    </a>
+
+</div>
+        </aside>
+
+    </div>
+ </div>
+ 
+</section>
+
+{% endblock %}

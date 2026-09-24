@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CALE Shop Admin{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'store/admin/css/admin.css' %}?v=5">
+<link rel="stylesheet" href="{% static 'store/css/theme.css' %}?v=3">
+<script src="{% static 'store/js/theme.js' %}?v=1" defer></script></head>
+<body>
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <h2>CALE SHOP</h2>
+            <span>Admin Panel</span>
+        </div>
+
+        <nav class="sidebar-navigation">
+            {% if perms.store.view_dashboard %}<a href="{% url 'store:admin_dashboard' %}" class="sidebar-link">
+                <span class="sidebar-icon">⌂</span><span>الرئيسية</span>
+            </a>{% endif %}
+            {% if perms.store.view_product %}<a href="{% url 'store:admin_product_list' %}" class="sidebar-link">
+                <span class="sidebar-icon">▣</span><span>المنتجات</span>
+            </a>{% endif %}
+            {% if perms.store.view_order %}<a href="{% url 'store:admin_order_list' %}" class="sidebar-link">
+    <span class="sidebar-icon">▤</span>
+    <span>الطلبات</span>
+</a>{% endif %}
+            {% if perms.store.view_customer %}<a href="{% url 'store:admin_customer_list' %}" class="sidebar-link">
+    <span class="sidebar-icon">♙</span>
+    <span>العملاء</span>
+</a>{% endif %}
+            {% if perms.auth.view_user %}
+            <a href="{% url 'store:admin_user_list' %}" class="sidebar-link">
+                <span class="sidebar-icon">♙</span><span>حسابات الموظفين</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'store:home' %}" class="sidebar-link">
+                <span class="sidebar-icon">←</span><span>المتجر</span>
+            </a>
+            <form method="post" action="{% url 'store:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="sidebar-link logout-link logout-button">
+                    <span class="sidebar-icon">⎋</span><span>تسجيل الخروج</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <div>
+                <button type="button" class="sidebar-toggle" id="sidebarToggle">☰</button>
+                <span class="header-title">{% block header_title %}لوحة التحكم{% endblock %}</span>
+            </div>
+            <div class="admin-user">
+                {% if request.user.is_authenticated %}
+                    <span class="user-name">{{ request.user.username }}</span>
+                {% endif %}
+            </div>
+        </header>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="admin-content">
+            {% block content %}{% endblock %}
+        </section>
+    </main>
+</div>
+
+<script src="{% static 'store/admin/js/admin.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

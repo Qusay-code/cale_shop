@@ -1,0 +1,232 @@
+{% extends "store/base.html" %}
+
+{% block title %}سلة المشتريات | CALE Shop{% endblock %}
+
+{% block content %}
+
+<section class="cart-page">
+
+    <div class="container">
+
+        <!-- عنوان الصفحة -->
+        <div class="cart-header">
+
+            <span class="section-eyebrow">
+                CALE SHOP
+            </span>
+
+            <h1>
+                سلة المشتريات
+            </h1>
+
+            <p>
+                راجع منتجاتك قبل إتمام الطلب.
+            </p>
+
+        </div>
+
+
+        {% if cart_items %}
+
+            <div class="cart-layout">
+
+                <!-- المنتجات -->
+                <div class="cart-items">
+
+                    {% for item in cart_items %}
+
+                        <article class="cart-item">
+
+                            <!-- صورة المنتج -->
+                            <div class="cart-item-image">
+
+                                {% if item.product.image %}
+
+                                    <img
+                                        src="{{ item.product.image.url }}"
+                                        alt="{{ item.product.name }}"
+                                    >
+
+                                {% else %}
+
+                                    <div class="cart-placeholder">
+                                        🍰
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- معلومات المنتج -->
+                            <div class="cart-item-info">
+
+                                <h2>
+                                    {{ item.product.name }}
+                                </h2>
+
+                                {% if item.product.description %}
+                                    <p>
+                                        {{ item.product.description }}
+                                    </p>
+                                {% endif %}
+
+                                <div class="cart-item-price">
+                                    {{ item.product.price|floatformat:2 }}
+                                    <span>د.ل</span>
+                                </div>
+
+                                <div class="cart-stock">
+                                    المخزون المتاح:
+                                    {{ item.product.stock }}
+                                </div>
+
+                            </div>
+
+
+                            <!-- التحكم -->
+                            <div class="cart-item-actions">
+
+                                <form
+                                    method="post"
+                                    action="{% url 'store:update_cart_item' item.id %}"
+                                    class="cart-update-form"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <label for="quantity-{{ item.id }}">
+                                        الكمية
+                                    </label>
+
+                                    <input
+                                        id="quantity-{{ item.id }}"
+                                        type="number"
+                                        name="quantity"
+                                        value="{{ item.quantity }}"
+                                        min="1"
+                                        max="{{ item.product.stock }}"
+                                        required
+                                    >
+
+                                    <button type="submit">
+                                        تحديث
+                                    </button>
+
+                                </form>
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'store:remove_cart_item' item.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="remove-cart-button"
+                                    >
+                                        حذف من السلة
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- ملخص السلة -->
+                <aside class="cart-summary">
+
+                    <h2>
+                        ملخص الطلب
+                    </h2>
+
+                    <div class="cart-summary-row">
+
+                        <span>
+                            عدد المنتجات
+                        </span>
+
+                        <strong>
+                            {{ cart_items|length }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="cart-summary-divider"></div>
+
+
+                    <div class="cart-total">
+
+                        <span>
+                            إجمالي السلة
+                        </span>
+
+                        <strong>
+                            {{ total|floatformat:2 }}
+                            <small>د.ل</small>
+                        </strong>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'store:checkout' %}"
+                        class="checkout-button"
+                    >
+                        إتمام الطلب
+                    </a>
+
+
+                    <a
+                        href="{% url 'store:home' %}"
+                        class="continue-shopping"
+                    >
+                        ← متابعة التسوق
+                    </a>
+
+                </aside>
+
+            </div>
+
+        {% else %}
+
+            <!-- السلة فارغة -->
+            <div class="empty-cart">
+
+                <div class="empty-cart-icon">
+                    🛒
+                </div>
+
+                <h2>
+                    سلتك فارغة
+                </h2>
+
+                <p>
+                    لم تقم بإضافة أي منتجات إلى السلة بعد.
+                </p>
+
+                <a
+                    href="{% url 'store:home' %}"
+                    class="checkout-button"
+                >
+                    تصفح المنتجات
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

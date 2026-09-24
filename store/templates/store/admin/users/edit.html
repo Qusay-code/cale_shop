@@ -1,0 +1,58 @@
+{% extends "store/admin/base.html" %}
+
+{% block title %}تعديل الحساب | CALE Shop{% endblock %}
+{% block header_title %}تعديل الحساب{% endblock %}
+
+{% block content %}
+<div class="page-header staff-page-header">
+    <div>
+        <h1>تعديل حساب {{ account.username }}</h1>
+        <p>حساب موظف وإدارة · اترك كلمة المرور الجديدة فارغة للإبقاء على الحالية.</p>
+    </div>
+</div>
+
+<section class="admin-panel-card staff-form-card">
+    <div class="panel-header"><h2>بيانات الحساب</h2></div>
+    <div class="staff-form-body">
+        <form method="post" class="staff-account-form" data-original-role-ids="{{ initial_role_ids|join:',' }}">
+            {% csrf_token %}
+            <label class="role-confirm-check"><input type="checkbox" name="confirm_roles" id="confirm-roles" value="yes"> أؤكد تغيير الصلاحيات المحددة</label>
+            {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+            {% for field in form %}
+                <div class="form-group{% if field.name == 'groups' %} form-group-full{% endif %}">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}<small class="form-help">{{ field.help_text }}</small>{% endif %}
+                    {% if field.errors %}<div class="field-errors">{{ field.errors }}</div>{% endif %}
+                </div>
+            {% endfor %}
+            <div class="staff-form-actions">
+                <button class="btn btn-primary" type="submit">حفظ التعديلات</button>
+                <a class="btn btn-light" href="{% url 'store:admin_user_list' %}">إلغاء</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(() => {
+    const form = document.querySelector('.staff-account-form');
+    const roleContainer = form?.querySelector('.role-options');
+    const confirmation = form?.querySelector('#confirm-roles');
+    const baseline = (form?.dataset.originalRoleIds || '').split(',').filter(Boolean).sort();
+    if (!form || !roleContainer || !confirmation) return;
+    form.addEventListener('submit', (event) => {
+        const selected = [...roleContainer.querySelectorAll('input:checked')].map((input) => input.value).sort();
+        const changed = baseline.join(',') !== selected.join(',');
+        if (!changed || confirmation.checked) return;
+        event.preventDefault();
+        if (window.confirm('تأكيد حفظ التغييرات على صلاحيات هذا الموظف؟')) {
+            confirmation.checked = true;
+            form.submit();
+        }
+    });
+})();
+</script>
+{% endblock %}

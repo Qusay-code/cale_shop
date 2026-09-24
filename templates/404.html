@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الصفحة غير موجودة | CALE Shop</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}"><link rel="stylesheet" href="{% static 'store/css/theme.css' %}?v=2"><script src="{% static 'store/js/theme.js' %}?v=1" defer></script>
+</head>
+<body>
+<main class="auth-page">
+    <section class="auth-card">
+        <div class="auth-header">
+            <h2>الصفحة غير موجودة</h2>
+            <p>الرابط المطلوب غير متاح.</p>
+        </div>
+        <a href="{% url 'store:home' %}" class="login-button">العودة إلى المتجر</a>
+    </section>
+</main>
+</body>
+</html>

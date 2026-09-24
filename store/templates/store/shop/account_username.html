@@ -1,0 +1,97 @@
+{% extends "store/base.html" %}
+
+{% block title %}تغيير اسم المستخدم | CALE Shop{% endblock %}
+
+{% block content %}
+
+<section class="account-page">
+
+    <div class="container">
+
+        <div class="account-header">
+
+            <span class="section-eyebrow">
+                CALE SHOP
+            </span>
+
+            <h1>
+                تغيير اسم المستخدم
+            </h1>
+
+            <p>
+                اختر اسم مستخدم جديدًا لحسابك.
+            </p>
+
+        </div>
+
+
+        <section class="account-card account-settings-card">
+
+            <div class="account-card-header">
+
+                <h2>
+                    اسم المستخدم
+                </h2>
+
+                <p>
+                    يجب أن يكون اسم المستخدم غير مستخدم من حساب آخر.
+                </p>
+
+            </div>
+
+
+            <form method="post" class="account-form">
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <div class="form-group">
+
+                    <label for="{{ form.username.id_for_label }}">
+                        {{ form.username.label }}
+                    </label>
+
+                    {{ form.username }}
+
+                    {% if form.username.errors %}
+                        <div class="field-errors">
+                            {{ form.username.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="account-form-actions">
+
+                    <button
+                        type="submit"
+                        class="account-save-button"
+                    >
+                        حفظ اسم المستخدم
+                    </button>
+
+                    <a
+                        href="{% url 'store:account' %}"
+                        class="account-cancel-button"
+                    >
+                        إلغاء
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+</section>
+
+{% endblock %}

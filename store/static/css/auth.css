@@ -1,0 +1,294 @@
+/* =========================================================
+   CALE Shop - Authentication
+   Login page styling
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(214, 167, 138, 0.18),
+            transparent 35%
+        ),
+        #faf7f5;
+
+    color: #302522;
+    min-height: 100vh;
+}
+
+
+/* =========================
+   Page
+   ========================= */
+
+.auth-page {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px 20px;
+}
+
+
+/* =========================
+   Card
+   ========================= */
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    padding: 42px 38px;
+
+    box-shadow:
+        0 20px 60px rgba(70, 45, 35, 0.10);
+}
+
+
+/* =========================
+   Logo
+   ========================= */
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    margin-bottom: 35px;
+}
+
+.logo-mark {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background: #b9785d;
+    color: #ffffff;
+
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.auth-logo h1 {
+    font-size: 23px;
+    margin-bottom: 3px;
+}
+
+.auth-logo span {
+    color: #8d7c76;
+    font-size: 13px;
+}
+
+
+/* =========================
+   Header
+   ========================= */
+
+.auth-header {
+    margin-bottom: 28px;
+}
+
+.auth-header h2 {
+    font-size: 27px;
+    margin-bottom: 9px;
+}
+
+.auth-header p {
+    color: #8d7c76;
+    font-size: 14px;
+}
+
+
+/* =========================
+   Form
+   ========================= */
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+
+    padding: 14px 15px;
+
+    border: 1px solid #e4d9d4;
+    border-radius: 12px;
+
+    background: #fff;
+
+    color: #302522;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #b9785d;
+
+    box-shadow:
+        0 0 0 3px rgba(185, 120, 93, 0.10);
+}
+
+
+/* =========================
+   Errors
+   ========================= */
+
+.form-error,
+.field-error {
+    color: #b42318;
+    font-size: 13px;
+}
+
+.form-error {
+    background: #fff1f0;
+    border: 1px solid #f3c5c1;
+
+    border-radius: 10px;
+
+    padding: 12px;
+}
+
+
+/* =========================
+   Login Button
+   ========================= */
+
+.login-button {
+    width: 100%;
+
+    border: none;
+    border-radius: 12px;
+
+    padding: 14px;
+
+    background: #b9785d;
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.login-button:hover {
+    background: #a9654c;
+
+    transform: translateY(-1px);
+}
+
+.login-button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================
+   Footer
+   ========================= */
+
+.auth-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    margin-top: 25px;
+
+    font-size: 14px;
+
+    color: #8d7c76;
+}
+
+.auth-footer a {
+    color: #a9654c;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   Back Home
+   ========================= */
+
+.back-home {
+    display: block;
+
+    margin-top: 22px;
+
+    text-align: center;
+
+    color: #8d7c76;
+
+    font-size: 13px;
+
+    text-decoration: none;
+}
+
+.back-home:hover {
+    color: #a9654c;
+}
+
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 500px) {
+
+    .auth-page {
+        padding: 15px;
+    }
+
+    .auth-card {
+        padding: 30px 22px;
+
+        border-radius: 20px;
+    }
+
+    .auth-header h2 {
+        font-size: 23px;
+    }
+}

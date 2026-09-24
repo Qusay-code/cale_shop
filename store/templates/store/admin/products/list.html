@@ -1,0 +1,68 @@
+{% extends "store/admin/base.html" %}
+{% block title %}المنتجات | CALE Shop{% endblock %}
+{% block header_title %}إدارة المنتجات{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>المنتجات</h1><p>إدارة منتجات المتجر وإضافة وتعديل وإيقاف المنتجات.</p></div>
+    <div><a href="{% url 'store:admin_product_create' %}" class="btn btn-primary">+ إضافة منتج</a></div>
+</div>
+
+<div class="filter-panel">
+<form method="get" class="filter-form">
+    <div class="filter-search">
+        <label for="search">البحث</label>
+        <input type="search" id="search" name="q" value="{{ search_query }}" class="form-control" placeholder="ابحث باسم المنتج أو الوصف...">
+    </div>
+    <div class="filter-status">
+        <label for="status">الحالة</label>
+        <select id="status" name="status" class="form-control">
+            <option value="all" {% if status_filter == "all" %}selected{% endif %}>جميع المنتجات</option>
+            <option value="active" {% if status_filter == "active" %}selected{% endif %}>المنتجات النشطة</option>
+            <option value="inactive" {% if status_filter == "inactive" %}selected{% endif %}>المنتجات المتوقفة</option>
+        </select>
+    </div>
+    <div class="filter-actions">
+        <button type="submit" class="btn btn-secondary">بحث</button>
+        <a href="{% url 'store:admin_product_list' %}" class="btn btn-light">إعادة تعيين</a>
+    </div>
+</form>
+</div>
+
+<div class="admin-panel-card">
+    <div class="panel-header"><h2>قائمة المنتجات</h2><span class="result-count">{{ products|length }} منتج</span></div>
+    {% if products %}
+    <div class="table-wrapper">
+    <table class="admin-table">
+        <thead><tr><th>الصورة</th><th>المنتج</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+        <tbody>
+        {% for product in products %}
+        <tr>
+            <td>
+                {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumbnail">
+                {% else %}<div class="product-no-image">—</div>{% endif %}
+            </td>
+            <td><div class="product-name">{{ product.name }}</div>{% if product.description %}<div class="product-description">{{ product.description|truncatechars:60 }}</div>{% endif %}</td>
+            <td><strong>{{ product.price }}</strong></td>
+            <td>{% if product.stock > 0 %}<span class="stock-positive">{{ product.stock }}</span>{% else %}<span class="stock-zero">نفد المخزون</span>{% endif %}</td>
+            <td>{% if product.is_active %}<span class="status-badge status-active">نشط</span>{% else %}<span class="status-badge status-inactive">متوقف</span>{% endif %}</td>
+            <td>
+                <div class="table-actions">
+                    <a href="{% url 'store:admin_product_update' product.pk %}" class="btn btn-small btn-secondary">تعديل</a>
+                    <form method="post" action="{% url 'store:admin_product_toggle_status' product.pk %}">
+                        {% csrf_token %}
+                        {% if product.is_active %}<button type="submit" class="btn btn-small btn-warning">إيقاف</button>
+                        {% else %}<button type="submit" class="btn btn-small btn-success">تفعيل</button>{% endif %}
+                    </form>
+                    <a href="{% url 'store:admin_product_delete' product.pk %}" class="btn btn-small btn-danger">حذف</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state"><div class="empty-icon">📦</div><h3>لا توجد منتجات</h3><p>لم يتم العثور على منتجات مطابقة للبحث.</p><a href="{% url 'store:admin_product_create' %}" class="btn btn-primary">إضافة أول منتج</a></div>
+    {% endif %}
+</div>
+{% endblock %}

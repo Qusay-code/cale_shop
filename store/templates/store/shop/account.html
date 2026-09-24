@@ -1,0 +1,252 @@
+{% extends "store/base.html" %}
+
+{% block title %}حسابي | CALE Shop{% endblock %}
+
+{% block content %}
+
+<section class="account-page">
+
+    <div class="container">
+
+        <div class="account-header">
+
+            <span class="section-eyebrow">
+                CALE SHOP
+            </span>
+
+            <h1>
+                حسابي
+            </h1>
+
+            <p>
+                إدارة بياناتك الشخصية ومعلومات التواصل.
+            </p>
+
+        </div>
+
+
+        <div class="account-layout">
+
+            <!-- =========================
+                 بطاقة الصورة الشخصية
+            ========================== -->
+
+            <aside class="account-profile-card">
+
+                <div class="profile-image-wrapper">
+
+                    {% if profile.profile_image %}
+
+                        <img
+                            src="{{ profile.profile_image.url }}"
+                            alt="الصورة الشخصية"
+                            class="profile-image"
+                        >
+
+                    {% else %}
+
+                        <div class="profile-image-placeholder">
+                            👤
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <h2>
+                    {{ profile.full_name }}
+                </h2>
+
+
+                <p class="profile-username">
+                    @{{ user.username }}
+                </p>
+
+
+                <div class="profile-divider"></div>
+
+
+                <p class="profile-hint">
+                    يمكنك تغيير الصورة الشخصية من نموذج البيانات.
+                </p>
+
+            </aside>
+
+
+            <!-- =========================
+                 بيانات الحساب
+            ========================== -->
+
+            <section class="account-card">
+
+                <div class="account-card-header">
+
+                    <div>
+                        <h2>
+                            المعلومات الشخصية
+                        </h2>
+
+                        <p>
+                            حدّث بياناتك الشخصية ومعلومات التوصيل.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <form
+                    method="post"
+                    enctype="multipart/form-data"
+                    class="account-form"
+                >
+
+                    {% csrf_token %}
+
+
+                    {% if form.non_field_errors %}
+
+                        <div class="form-errors">
+                            {{ form.non_field_errors }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- الاسم -->
+
+                    <div class="form-group">
+
+                        <label for="{{ form.full_name.id_for_label }}">
+                            {{ form.full_name.label }}
+                        </label>
+
+                        {{ form.full_name }}
+
+                        {% if form.full_name.errors %}
+                            <div class="field-errors">
+                                {{ form.full_name.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- الهاتف -->
+
+                    <div class="form-group">
+
+                        <label for="{{ form.phone.id_for_label }}">
+                            {{ form.phone.label }}
+                        </label>
+
+                        {{ form.phone }}
+
+                        {% if form.phone.errors %}
+                            <div class="field-errors">
+                                {{ form.phone.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- العنوان -->
+
+                    <div class="form-group">
+
+                        <label for="{{ form.address.id_for_label }}">
+                            {{ form.address.label }}
+                        </label>
+
+                        {{ form.address }}
+
+                        {% if form.address.errors %}
+                            <div class="field-errors">
+                                {{ form.address.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- الصورة -->
+
+                    <div class="form-group">
+
+                        <label for="{{ form.profile_image.id_for_label }}">
+                            {{ form.profile_image.label }}
+                        </label>
+
+                        {{ form.profile_image }}
+
+                        {% if form.profile_image.errors %}
+                            <div class="field-errors">
+                                {{ form.profile_image.errors }}
+                            </div>
+                        {% endif %}
+
+                        <small class="form-help">
+                            اختر صورة شخصية من جهازك.
+                        </small>
+
+                    </div>
+
+
+                    <div class="account-form-actions">
+
+                        <button
+                            type="submit"
+                            class="account-save-button"
+                        >
+                            حفظ التعديلات
+                        </button>
+
+                    </div>
+
+                </form>
+                <div class="account-security-section">
+
+    <div class="account-security-header">
+
+        <h2>
+            إعدادات الحساب
+        </h2>
+
+        <p>
+            إدارة بيانات تسجيل الدخول الخاصة بك.
+        </p>
+
+    </div>
+
+    <div class="account-security-actions">
+
+    <a
+        href="{% url 'store:account_username' %}"
+        class="account-security-button"
+    >
+        <span>👤</span>
+        <span>تغيير اسم المستخدم</span>
+    </a>
+
+    <a
+        href="{% url 'store:account_password' %}"
+        class="account-security-button"
+    >
+        <span>🔐</span>
+        <span>تغيير كلمة المرور</span>
+    </a>
+
+</div>
+
+</div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

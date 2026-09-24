@@ -1,0 +1,115 @@
+{% extends "store/admin/base.html" %}
+
+{% block title %}لوحة التحكم | CALE Shop{% endblock %}
+{% block header_title %}نظرة عامة{% endblock %}
+
+{% block content %}
+<section class="dashboard-welcome">
+    <div>
+        <span class="dashboard-eyebrow">CALE SHOP · الإدارة</span>
+        <h1>مرحبًا، {{ request.user.get_short_name|default:request.user.username }}</h1>
+        <p>إليك ملخص المتجر وما يحتاج إلى متابعة اليوم.</p>
+    </div>
+    <div class="dashboard-quick-actions" aria-label="إجراءات سريعة">
+        {% if can_view_orders %}
+            <a class="dashboard-action dashboard-action-primary" href="{% url 'store:admin_order_list' %}">
+                <span aria-hidden="true">▤</span> متابعة الطلبات
+                {% if new_orders %}<span class="action-count">{{ new_orders }}</span>{% endif %}
+            </a>
+        {% endif %}
+        {% if can_add_products %}
+            <a class="dashboard-action" href="{% url 'store:admin_product_create' %}">
+                <span aria-hidden="true">＋</span> إضافة منتج
+            </a>
+        {% endif %}
+        {% if can_manage_users %}
+            <a class="dashboard-action" href="{% url 'store:admin_user_create' %}">
+                <span aria-hidden="true">♙</span> إنشاء حساب موظف
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="dashboard-statistics-grid" aria-label="إحصاءات المتجر">
+    {% if can_view_products %}<article class="dashboard-stat-card stat-products">
+        <div class="dashboard-stat-icon" aria-hidden="true">◇</div>
+        <div><span class="stat-label">إجمالي المنتجات</span><strong class="stat-value">{{ total_products }}</strong></div>
+        {% if can_view_products %}<a href="{% url 'store:admin_product_list' %}" aria-label="عرض المنتجات">←</a>{% endif %}
+    </article>{% endif %}
+    {% if can_view_orders %}<article class="dashboard-stat-card stat-orders">
+        <div class="dashboard-stat-icon" aria-hidden="true">▤</div>
+        <div><span class="stat-label">إجمالي الطلبات</span><strong class="stat-value">{{ total_orders }}</strong></div>
+        {% if can_view_orders %}<a href="{% url 'store:admin_order_list' %}" aria-label="عرض الطلبات">←</a>{% endif %}
+    </article>{% endif %}
+    {% if can_view_customers %}<article class="dashboard-stat-card stat-customers">
+        <div class="dashboard-stat-icon" aria-hidden="true">♙</div>
+        <div><span class="stat-label">العملاء</span><strong class="stat-value">{{ total_customers }}</strong></div>
+        {% if can_view_customers %}<a href="{% url 'store:admin_customer_list' %}" aria-label="عرض العملاء">←</a>{% endif %}
+    </article>{% endif %}
+    {% if can_view_orders %}<article class="dashboard-stat-card stat-new-orders">
+        <div class="dashboard-stat-icon" aria-hidden="true">◷</div>
+        <div><span class="stat-label">طلبات بانتظار المراجعة</span><strong class="stat-value">{{ new_orders }}</strong></div>
+        {% if can_view_orders %}<a href="{% url 'store:admin_order_list' %}?status=new" aria-label="عرض الطلبات الجديدة">←</a>{% endif %}
+    </article>{% endif %}
+    {% if can_view_orders %}<article class="dashboard-stat-card stat-sales">
+        <div class="dashboard-stat-icon" aria-hidden="true">د.ل</div>
+        <div><span class="stat-label">إجمالي المبيعات المحسوبة</span><strong class="stat-value">{{ total_sales|floatformat:2 }}</strong></div>
+        <span class="sales-caption">لا تشمل الطلبات الملغاة</span>
+    </article>{% endif %}
+</section>
+
+<section class="dashboard-panels-grid">
+    {% if can_view_orders %}
+    <article class="dashboard-panel dashboard-recent-orders">
+        <header class="dashboard-panel-heading">
+            <div><span class="dashboard-eyebrow">آخر المستجدات</span><h2>أحدث الطلبات</h2></div>
+            <a href="{% url 'store:admin_order_list' %}">كل الطلبات <span aria-hidden="true">←</span></a>
+        </header>
+        {% if recent_orders %}
+        <div class="dashboard-table-wrap">
+            <table class="dashboard-table">
+                <thead><tr><th>رقم الطلب</th><th>العميل</th><th>التاريخ</th><th>الحالة</th><th></th></tr></thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td class="order-number">#{{ order.id }}</td>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.created_at|date:"Y/m/d" }}</td>
+                        <td><span class="dashboard-status status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                        <td><a class="dashboard-row-link" href="{% url 'store:admin_order_detail' order.pk %}" aria-label="تفاصيل الطلب {{ order.id }}">عرض</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="dashboard-empty"><span aria-hidden="true">▤</span><p>لا توجد طلبات حتى الآن.</p></div>
+        {% endif %}
+    </article>
+    {% endif %}
+
+    {% if can_view_products %}
+    <article class="dashboard-panel dashboard-stock-panel">
+        <header class="dashboard-panel-heading">
+            <div><span class="dashboard-eyebrow">تنبيه المخزون</span><h2>منتجات قاربت على النفاد</h2></div>
+            <a href="{% url 'store:admin_product_list' %}">إدارة المنتجات <span aria-hidden="true">←</span></a>
+        </header>
+        {% if low_stock_products %}
+        <ul class="low-stock-list">
+            {% for product in low_stock_products %}
+            <li>
+                <span class="stock-product-mark" aria-hidden="true">◇</span>
+                <span class="stock-product-name">{{ product.name }}</span>
+                <span class="stock-quantity{% if product.stock == 0 %} is-out-of-stock{% endif %}">
+                    {% if product.stock == 0 %}نفد{% else %}{{ product.stock }} متبقية{% endif %}
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="dashboard-empty stock-empty"><span aria-hidden="true">✓</span><p>المخزون بحالة جيدة حاليًا.</p></div>
+        {% endif %}
+    </article>
+    {% endif %}
+</section>
+{% endblock %}

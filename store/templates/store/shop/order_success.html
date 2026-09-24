@@ -1,0 +1,170 @@
+{% extends "store/base.html" %}
+
+{% block title %}تم استلام الطلب | CALE Shop{% endblock %}
+
+{% block content %}
+
+<section class="order-success-page">
+
+    <div class="container">
+
+        <!-- Success Header -->
+        <div class="order-success-header">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <span class="section-eyebrow">
+                CALE SHOP
+            </span>
+
+            <h1>
+                تم استلام طلبك بنجاح 🎉
+            </h1>
+
+            <p>
+                شكرًا لك على طلبك من CALE Shop.
+                سنعمل على تجهيز طلبك بأفضل صورة.
+            </p>
+
+        </div>
+
+
+        <!-- Order Number -->
+        <div class="order-number-card">
+
+            <span>
+                رقم الطلب
+            </span>
+
+            <strong>
+                #{{ order.id }}
+            </strong>
+
+            <div class="order-status">
+                {{ order.get_status_display }}
+            </div>
+
+        </div>
+
+
+        <div class="order-success-layout">
+
+            <!-- Customer Information -->
+            <section class="success-card">
+
+                <div class="success-card-header">
+                    <h2>معلومات التوصيل</h2>
+                    <p>البيانات المسجلة لهذا الطلب.</p>
+                </div>
+
+                <div class="customer-info">
+
+                    <div class="info-row">
+                        <span>الاسم</span>
+                        <strong>{{ order.full_name }}</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>رقم الهاتف</span>
+                        <strong>{{ order.phone }}</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>العنوان</span>
+                        <strong>{{ order.address }}</strong>
+                    </div>
+
+                    {% if order.notes %}
+                        <div class="info-row">
+                            <span>الملاحظات</span>
+                            <strong>{{ order.notes }}</strong>
+                        </div>
+                    {% endif %}
+
+                    <div class="info-row">
+                        <span>طريقة الدفع</span>
+                        <strong>
+                            {{ order.get_payment_method_display }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Order Details -->
+            <section class="success-card">
+
+                <div class="success-card-header">
+                    <h2>تفاصيل الطلب</h2>
+                    <p>المنتجات التي تم طلبها.</p>
+                </div>
+
+                <div class="success-order-items">
+
+                    {% for item in order.items.all %}
+
+                        <article class="success-order-item">
+
+                            <div class="success-order-item-info">
+
+                                <h3>
+                                    {{ item.product_name }}
+                                </h3>
+
+                                <p>
+                                    سعر الوحدة:
+                                    {{ item.unit_price|floatformat:2 }}
+                                    د.ل
+                                </p>
+
+                                <p>
+                                    الكمية:
+                                    {{ item.quantity }}
+                                </p>
+
+                            </div>
+
+                            <strong class="success-item-price">
+                                {{ item.unit_price|floatformat:2 }}
+                                د.ل
+                            </strong>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- Navigation -->
+        <div class="order-success-actions">
+
+            <a
+                href="{% url 'store:home' %}"
+                class="success-primary-button"
+            >
+                العودة إلى المتجر
+            </a>
+
+            <a
+                href="{% url 'store:cart' %}"
+                class="success-secondary-button"
+            >
+                سلة المشتريات
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
