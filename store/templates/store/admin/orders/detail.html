@@ -1,308 +1,101 @@
 {% extends "store/admin/base.html" %}
+{% load static %}
 
 {% block title %}تفاصيل الطلب #{{ order.id }} | CALE Shop{% endblock %}
-
 {% block header_title %}تفاصيل الطلب #{{ order.id }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'store/admin/css/order-print.css' %}?v=1" media="print">
+{% endblock %}
 
 {% block content %}
-
-<div class="page-header">
+<div class="page-header order-page-header no-print">
     <div>
+        <span class="dashboard-eyebrow">إدارة الطلبات</span>
         <h1>تفاصيل الطلب #{{ order.id }}</h1>
-        <p>عرض معلومات العميل والطلب والمنتجات وتحديث حالة الطلب.</p>
+        <p>راجع بيانات العميل والمنتجات، واطبع نسخة جاهزة للتجهيز أو الفاتورة.</p>
     </div>
-
-    <a href="{% url 'store:admin_order_list' %}" class="btn btn-light">
-        العودة إلى الطلبات
-    </a>
+    <div class="order-page-actions">
+        <button type="button" class="btn btn-primary" data-print-order>طباعة الطلب</button>
+        <a href="{% url 'store:admin_order_list' %}" class="btn btn-light">العودة إلى الطلبات</a>
+    </div>
 </div>
 
+<div class="order-print-sheet">
+    <header class="order-print-brand print-only">
+        <div><h1>CALE SHOP</h1><p>تفاصيل طلب متجر CALE</p></div>
+        <div class="order-print-number"><strong>طلب #{{ order.id }}</strong><span>{{ order.created_at|date:"Y/m/d H:i" }}</span></div>
+    </header>
 
-<!-- معلومات العميل والطلب -->
-<div class="admin-detail-grid">
+    <div class="admin-detail-grid order-detail-grid">
+        <section class="admin-panel-card">
+            <div class="panel-header"><h2>بيانات العميل</h2></div>
+            <div class="panel-body">
+                <div class="detail-row"><span class="detail-label">اسم المستخدم</span><strong>{{ order.user.username }}</strong></div>
+                <div class="detail-row"><span class="detail-label">الاسم الكامل</span><strong>{{ order.full_name }}</strong></div>
+                <div class="detail-row"><span class="detail-label">رقم الهاتف</span><a href="tel:{{ order.phone }}" class="order-phone">{{ order.phone }}</a></div>
+                <div class="detail-row"><span class="detail-label">العنوان</span><span>{{ order.address|linebreaksbr }}</span></div>
+                {% if order.notes %}<div class="detail-row"><span class="detail-label">ملاحظات العميل</span><span>{{ order.notes|linebreaksbr }}</span></div>{% endif %}
+            </div>
+        </section>
 
-    <!-- معلومات العميل -->
-    <div class="admin-panel-card">
+        <section class="admin-panel-card">
+            <div class="panel-header"><h2>ملخص الطلب</h2><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></div>
+            <div class="panel-body">
+                <div class="detail-row"><span class="detail-label">رقم الطلب</span><strong>#{{ order.id }}</strong></div>
+                <div class="detail-row"><span class="detail-label">تاريخ الإنشاء</span><span>{{ order.created_at|date:"Y/m/d H:i" }}</span></div>
+                <div class="detail-row"><span class="detail-label">آخر تحديث</span><span>{{ order.updated_at|date:"Y/m/d H:i" }}</span></div>
+                <div class="detail-row"><span class="detail-label">طريقة الدفع</span><span>{{ order.get_payment_method_display }}</span></div>
+                <div class="detail-row"><span class="detail-label">عدد المنتجات</span><span>{{ items|length }} منتج</span></div>
+            </div>
+        </section>
+    </div>
 
-        <div class="panel-header">
-            <h2>معلومات العميل</h2>
-        </div>
-
+    {% if perms.store.change_order %}
+    <section class="admin-panel-card order-status-editor no-print">
+        <div class="panel-header"><div><span class="dashboard-eyebrow">إجراء الطلب</span><h2>تحديث الحالة</h2></div></div>
         <div class="panel-body">
-
-            <div class="detail-row">
-                <span class="detail-label">اسم المستخدم</span>
-                <strong>{{ order.user.username }}</strong>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">الاسم الكامل</span>
-                <strong>{{ order.full_name }}</strong>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">رقم الهاتف</span>
-                <strong>{{ order.phone }}</strong>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">العنوان</span>
-                <span>{{ order.address }}</span>
-            </div>
-
-            {% if order.notes %}
-                <div class="detail-row">
-                    <span class="detail-label">الملاحظات</span>
-                    <span>{{ order.notes }}</span>
-                </div>
-            {% endif %}
-
-        </div>
-
-    </div>
-
-
-    <!-- معلومات الطلب -->
-    <div class="admin-panel-card">
-
-        <div class="panel-header">
-            <h2>معلومات الطلب</h2>
-        </div>
-
-        <div class="panel-body">
-
-            <div class="detail-row">
-                <span class="detail-label">رقم الطلب</span>
-                <strong>#{{ order.id }}</strong>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">الحالة الحالية</span>
-
-                <span>
-                    {% if order.status == "NEW" %}
-
-                        <span class="status-badge status-new">
-                            {{ order.get_status_display }}
-                        </span>
-
-                    {% elif order.status == "PROCESSING" %}
-
-                        <span class="status-badge status-processing">
-                            {{ order.get_status_display }}
-                        </span>
-
-                    {% elif order.status == "DELIVERED" %}
-
-                        <span class="status-badge status-active">
-                            {{ order.get_status_display }}
-                        </span>
-
-                    {% elif order.status == "CANCELLED" %}
-
-                        <span class="status-badge status-inactive">
-                            {{ order.get_status_display }}
-                        </span>
-
-                    {% else %}
-
-                        <span class="status-badge">
-                            {{ order.get_status_display }}
-                        </span>
-
-                    {% endif %}
-                </span>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">طريقة الدفع</span>
-                <span>{{ order.get_payment_method_display }}</span>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">تاريخ إنشاء الطلب</span>
-                <span>{{ order.created_at|date:"Y-m-d H:i" }}</span>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">آخر تحديث</span>
-                <span>{{ order.updated_at|date:"Y-m-d H:i" }}</span>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- تغيير حالة الطلب -->
-<div class="admin-panel-card">
-
-    <div class="panel-header">
-        <h2>تغيير حالة الطلب</h2>
-    </div>
-
-    <div class="panel-body">
-
-        <form method="post"
-              action="{% url 'store:admin_order_change_status' order.id %}"
-              class="admin-form">
-
-            {% csrf_token %}
-
-            <div class="form-group">
-
-                <label for="status">
-                    الحالة الجديدة
-                </label>
-
-                <select id="status"
-                        name="status"
-                        class="form-control"
-                        required>
-
-                        {% for value, label in available_statuses %}
-
-
-                        <option value="{{ value }}"
-                            {% if order.status == value %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-
-                    {% endfor %}
-
+            <form method="post" action="{% url 'store:admin_order_change_status' order.id %}" class="order-status-form">
+                {% csrf_token %}
+                <label for="status">الحالة الجديدة</label>
+                <select id="status" name="status" class="form-control" required>
+                    {% for value, label in available_statuses %}<option value="{{ value }}"{% if order.status == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
                 </select>
-
-            </div>
-
-            <div class="form-actions">
-
-                <button type="submit" class="btn btn-primary">
-                    حفظ الحالة
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
-
-
-<!-- المنتجات -->
-<div class="admin-panel-card">
-
-    <div class="panel-header">
-
-        <h2>المنتجات</h2>
-
-        {% if items %}
-            <span class="result-count">
-                {{ items|length }} منتج
-            </span>
-        {% endif %}
-
-    </div>
-
-    {% if items %}
-
-        <div class="table-wrapper">
-
-            <table class="admin-table">
-
-                <thead>
-
-                    <tr>
-                        <th>#</th>
-                        <th>المنتج</th>
-                        <th>سعر الوحدة</th>
-                        <th>الكمية</th>
-                        <th>الإجمالي</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for item in items %}
-
-                        <tr>
-
-                            <td>
-                                {{ forloop.counter }}
-                            </td>
-
-                            <td>
-                                <strong>
-                                    {{ item.product_name }}
-                                </strong>
-                            </td>
-
-                            <td>
-                                {{ item.unit_price|floatformat:2 }}
-                            </td>
-
-                            <td>
-                                {{ item.quantity }}
-                            </td>
-
-                            <td>
-                                <strong>
-                                    {{ item.unit_price|floatformat:2 }}
-                                    ×
-                                    {{ item.quantity }}
-                                </strong>
-                            </td>
-
-                        </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
+                <button type="submit" class="btn btn-primary">حفظ الحالة</button>
+            </form>
         </div>
-
-
-        <!-- إجمالي الطلب -->
-        <div class="order-total">
-    <span>إجمالي الطلب</span>
-
-    <strong>
-        {{ total|floatformat:2 }}
-    </strong>
-</div>
-
-    {% else %}
-
-        <div class="empty-state">
-
-            <div class="empty-icon">📦</div>
-
-            <h3>لا توجد منتجات</h3>
-
-            <p>
-                لا توجد منتجات مرتبطة بهذا الطلب.
-            </p>
-
-        </div>
-
+    </section>
     {% endif %}
 
+    <section class="admin-panel-card order-products-card">
+        <div class="panel-header">
+            <div><span class="dashboard-eyebrow">محتويات الطلب</span><h2>المنتجات</h2></div>
+            <span class="result-count">{{ items|length }} منتج</span>
+        </div>
+        {% if items %}
+        <div class="table-wrapper">
+            <table class="admin-table order-items-table">
+                <thead><tr><th>#</th><th>المنتج</th><th>سعر الوحدة</th><th>الكمية</th><th>الإجمالي</th></tr></thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ item.product_name }}</strong></td>
+                        <td>{{ item.unit_price|floatformat:2 }} د.ل</td>
+                        <td>{{ item.quantity }}</td>
+                        <td><strong>{{ item.line_total|floatformat:2 }} د.ل</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="order-total"><span>إجمالي الطلب</span><strong>{{ total|floatformat:2 }} د.ل</strong></div>
+        {% else %}
+        <div class="empty-state"><div class="empty-icon">□</div><h3>لا توجد منتجات</h3><p>لا توجد منتجات مرتبطة بهذا الطلب.</p></div>
+        {% endif %}
+    </section>
+
+    <footer class="order-print-footer print-only">شكرًا لاختياركم CALE SHOP · نسخة تجهيز الطلب</footer>
 </div>
 
-
-<!-- العودة إلى قائمة الطلبات -->
-<div class="page-actions">
-
-    <a href="{% url 'store:admin_order_list' %}"
-       class="btn btn-light">
-        ← العودة إلى قائمة الطلبات
-    </a>
-
-</div>
-
+<div class="page-actions no-print"><a href="{% url 'store:admin_order_list' %}" class="btn btn-light">العودة إلى قائمة الطلبات</a></div>
 {% endblock %}

@@ -28,6 +28,11 @@
             </a>
         {% endif %}
     </div>
+    <div class="dashboard-date-chip">
+        <span class="dashboard-live-dot" aria-hidden="true"></span>
+        <span>ملخص اليوم</span>
+        <strong>{{ today|date:"Y/m/d" }}</strong>
+    </div>
 </section>
 
 <section class="dashboard-statistics-grid" aria-label="إحصاءات المتجر">
@@ -57,6 +62,95 @@
         <span class="sales-caption">لا تشمل الطلبات الملغاة</span>
     </article>{% endif %}
 </section>
+
+{% if can_view_orders or can_view_products or can_view_customers %}<section class="dashboard-period-strip" aria-label="ملخص الشهر والمخزون">
+    {% if can_view_orders %}
+    <a class="period-metric period-orders" href="{% url 'store:admin_order_list' %}">
+        <span class="period-icon" aria-hidden="true">↗</span>
+        <span><small>طلبات هذا الشهر</small><strong>{{ month_orders }}</strong></span>
+        <span class="period-caption">منذ {{ today|date:"Y/m/01" }}</span>
+    </a>
+    <div class="period-metric period-revenue">
+        <span class="period-icon" aria-hidden="true">د.ل</span>
+        <span><small>مبيعات هذا الشهر</small><strong>{{ month_sales|floatformat:2 }}</strong></span>
+        <span class="period-caption">باستثناء الطلبات الملغاة</span>
+    </div>
+    {% endif %}
+    {% if can_view_products %}
+    <a class="period-metric period-stock{% if low_stock_count %} has-alert{% endif %}" href="{% url 'store:admin_product_list' %}?status=active">
+        <span class="period-icon" aria-hidden="true">!</span>
+        <span><small>منتجات تحتاج متابعة</small><strong>{{ low_stock_count }}</strong></span>
+        <span class="period-caption">مخزون 5 قطع أو أقل</span>
+    </a>
+    {% endif %}
+    {% if can_view_customers %}
+    <a class="period-metric period-customers" href="{% url 'store:admin_customer_list' %}">
+        <span class="period-icon" aria-hidden="true">+</span>
+        <span><small>عملاء جدد هذا الشهر</small><strong>{{ month_customers }}</strong></span>
+        <span class="period-caption">منذ {{ today|date:"Y/m/01" }}</span>
+    </a>
+    {% endif %}
+</section>
+{% endif %}
+
+{% if can_view_orders or can_view_audit_log %}<section class="dashboard-insights-grid">
+    {% if can_view_orders %}
+    <article class="dashboard-panel dashboard-activity-chart">
+        <header class="dashboard-panel-heading">
+            <div><span class="dashboard-eyebrow">نظرة أسبوعية</span><h2>حركة الطلبات</h2></div>
+            <span class="dashboard-panel-meta">آخر 7 أيام</span>
+        </header>
+        <div class="dashboard-chart" role="img" aria-label="عدد الطلبات يوميًا خلال آخر سبعة أيام">
+            {% for day in weekly_activity %}
+            <div class="dashboard-chart-day">
+                <strong>{{ day.count }}</strong>
+                <div class="dashboard-chart-track"><span class="dashboard-chart-bar {{ day.height_class }}"></span></div>
+                <span class="dashboard-chart-label">{{ day.label }}</span>
+                <small>{{ day.date }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </article>
+
+    <article class="dashboard-panel dashboard-status-panel">
+        <header class="dashboard-panel-heading">
+            <div><span class="dashboard-eyebrow">نظرة تشغيلية</span><h2>حالات الطلبات</h2></div>
+            <span class="dashboard-panel-meta">{{ total_orders }} إجمالي</span>
+        </header>
+        <div class="dashboard-status-list">
+            {% for item in order_status_summary %}
+            <div class="dashboard-status-row">
+                <div><span class="dashboard-status status-{{ item.status }}">{{ item.label }}</span><strong>{{ item.count }}</strong></div>
+                <progress class="status-progress status-{{ item.status }}" max="{{ status_total|default:1 }}" value="{{ item.count }}" aria-label="{{ item.label }}: {{ item.count }}"></progress>
+            </div>
+            {% endfor %}
+        </div>
+    </article>
+    {% endif %}
+
+    {% if can_view_audit_log %}
+    <article class="dashboard-panel dashboard-admin-activity">
+        <header class="dashboard-panel-heading">
+            <div><span class="dashboard-eyebrow">الأمان والإدارة</span><h2>آخر تغييرات الفريق</h2></div>
+            <a href="{% url 'store:admin_audit_log' %}">عرض السجل الكامل <span aria-hidden="true">←</span></a>
+        </header>
+        {% if recent_admin_activity %}
+        <ul class="dashboard-admin-activity-list">
+            {% for entry in recent_admin_activity %}
+            <li>
+                <span class="activity-mark" aria-hidden="true">{% if entry.action == 'staff_created' %}+{% else %}↻{% endif %}</span>
+                <span class="activity-copy"><strong>{% if entry.action == 'staff_created' %}إنشاء حساب{% else %}تحديث حساب{% endif %}: {{ entry.target_username }}</strong><small>بواسطة {{ entry.actor.username|default:"حساب محذوف" }}</small></span>
+                <time datetime="{{ entry.created_at|date:'c' }}">{{ entry.created_at|date:"m/d H:i" }}</time>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="dashboard-empty"><span aria-hidden="true">✓</span><p>لا توجد تغييرات إدارية مسجلة بعد.</p></div>
+        {% endif %}
+    </article>
+    {% endif %}
+</section>
+{% endif %}
 
 <section class="dashboard-panels-grid">
     {% if can_view_orders %}

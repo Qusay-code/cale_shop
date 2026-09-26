@@ -14,6 +14,7 @@ Security:
     access the custom administration panel.
 """
 from django.db import models, transaction
+from datetime import timedelta
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db.models import Q
@@ -32,6 +33,8 @@ from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import permission_required
+from django.db.models.functions import TruncDate
+from django.utils import timezone
 
 def staff_required(view_func):
     """
@@ -75,10 +78,13 @@ def dashboard(request):
     can_view_orders = request.user.has_perm("store.view_order")
     can_view_products = request.user.has_perm("store.view_product")
     can_view_customers = request.user.has_perm("store.view_customer")
+    today = timezone.localdate()
+    month_start = today.replace(day=1)
     total_products = Product.objects.count() if can_view_products else 0
     total_customers = User.objects.filter(is_staff=False).count() if can_view_customers else 0
     total_orders = Order.objects.count() if can_view_orders else 0
     new_orders = Order.objects.filter(status=Order.Status.NEW).count() if can_view_orders else 0
+    low_stock_count = Product.objects.filter(is_active=True, stock__lte=5).count() if can_view_products else 0
 
     total_sales = (
     OrderItem.objects
@@ -102,6 +108,63 @@ def dashboard(request):
     )["total"]
     or 0
     ) if can_view_orders else 0
+    month_orders = Order.objects.filter(
+        created_at__date__gte=month_start,
+        created_at__date__lte=today,
+    ).count() if can_view_orders else 0
+    month_customers = User.objects.filter(
+        is_staff=False,
+        date_joined__date__gte=month_start,
+        date_joined__date__lte=today,
+    ).count() if can_view_customers else 0
+    month_sales = (
+        OrderItem.objects.filter(
+            order__created_at__date__gte=month_start,
+            order__created_at__date__lte=today,
+            order__status__in=[Order.Status.NEW, Order.Status.PROCESSING, Order.Status.DELIVERED],
+        ).aggregate(
+            total=Sum(ExpressionWrapper(F("unit_price") * F("quantity"), output_field=DecimalField(max_digits=12, decimal_places=2)))
+        )["total"] or 0
+    ) if can_view_orders else 0
+
+    weekly_activity = []
+    order_status_summary = []
+    if can_view_orders:
+        week_start = today - timedelta(days=6)
+        counts_by_day = {
+            row["day"]: row["count"]
+            for row in Order.objects.filter(
+                created_at__date__gte=week_start,
+                created_at__date__lte=today,
+            ).annotate(day=TruncDate("created_at"))
+            .values("day")
+            .annotate(count=models.Count("pk"))
+        }
+        weekday_names = ("الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد")
+        for offset in range(7):
+            day = week_start + timedelta(days=offset)
+            weekly_activity.append({
+                "label": weekday_names[day.weekday()],
+                "date": day.strftime("%d/%m"),
+                "count": counts_by_day.get(day, 0),
+            })
+        peak_count = max((row["count"] for row in weekly_activity), default=0)
+        for row in weekly_activity:
+            row["height"] = max(8, round(row["count"] / peak_count * 100)) if peak_count else 8
+            row["height_class"] = f"height-{min(100, max(10, ((row['height'] + 9) // 10) * 10))}"
+
+        order_status_counts = dict(
+            Order.objects.values_list("status").annotate(count=models.Count("pk"))
+        )
+        status_peak = max(order_status_counts.values(), default=0)
+        for status, label in Order.Status.choices:
+            count = order_status_counts.get(status, 0)
+            order_status_summary.append({
+                "status": status,
+                "label": label,
+                "count": count,
+                "width": round(count / status_peak * 100) if status_peak else 0,
+            })
     recent_orders = (
         Order.objects.select_related("user").order_by("-created_at")[:6]
         if can_view_orders
@@ -121,6 +184,18 @@ def dashboard(request):
         "total_orders": total_orders,
         "new_orders": new_orders,
         "total_sales": total_sales,
+        "month_orders": month_orders,
+        "month_customers": month_customers,
+        "month_sales": month_sales,
+        "low_stock_count": low_stock_count,
+        "weekly_activity": weekly_activity,
+        "order_status_summary": order_status_summary,
+        "status_total": total_orders,
+        "today": today,
+        "can_view_audit_log": is_cale_super_admin(request.user),
+        "recent_admin_activity": AdminAuditLog.objects.select_related("actor").all()[:4]
+        if is_cale_super_admin(request.user)
+        else [],
         "recent_orders": recent_orders,
         "low_stock_products": low_stock_products,
         "can_view_orders": can_view_orders,
@@ -464,6 +539,8 @@ def order_detail(request, pk):
         .select_related("product")
         .all()
     )
+    for item in items:
+        item.line_total = item.unit_price * item.quantity
 
     # Calculate the total value of all items in this order.
     total = sum(

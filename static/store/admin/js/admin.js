@@ -5,6 +5,11 @@
  * سيتم توسيعه لاحقًا لإضافة التفاعلات الإدارية المطلوبة.
  */
 document.addEventListener("DOMContentLoaded", () => {
+    const printButton = document.querySelector("[data-print-order]");
+    if (printButton) {
+        printButton.addEventListener("click", () => window.print());
+    }
+
     const toggle = document.getElementById("sidebarToggle");
     const sidebar = document.querySelector(".admin-sidebar");
 

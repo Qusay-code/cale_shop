@@ -209,6 +209,64 @@ html[data-theme="dark"] .dashboard-welcome {
     background: linear-gradient(115deg, #22252b 0%, #302a29 100%);
 }
 
+html[data-theme="dark"] .dashboard-date-chip,
+html[data-theme="dark"] .period-metric {
+    background: #25272e;
+    border-color: #414047;
+    color: #eee7e2;
+}
+
+html[data-theme="dark"] .dashboard-date-chip strong,
+html[data-theme="dark"] .period-metric strong,
+html[data-theme="dark"] .dashboard-chart-day > strong,
+html[data-theme="dark"] .dashboard-status-row > div > strong,
+html[data-theme="dark"] .activity-copy strong {
+    color: #f1ece8;
+}
+
+html[data-theme="dark"] .dashboard-date-chip > span:not(.dashboard-live-dot),
+html[data-theme="dark"] .period-metric small,
+html[data-theme="dark"] .period-caption,
+html[data-theme="dark"] .dashboard-panel-meta,
+html[data-theme="dark"] .dashboard-chart-label,
+html[data-theme="dark"] .dashboard-chart-day small,
+html[data-theme="dark"] .activity-copy small,
+html[data-theme="dark"] .dashboard-admin-activity-list time {
+    color: #bdb4af;
+}
+
+html[data-theme="dark"] .dashboard-panel-meta,
+html[data-theme="dark"] .dashboard-chart-track,
+html[data-theme="dark"] .status-progress,
+html[data-theme="dark"] .status-progress::-webkit-progress-bar {
+    background: #34363d;
+}
+
+html[data-theme="dark"] .dashboard-admin-activity-list li {
+    border-color: #414047;
+}
+
+html[data-theme="dark"] .activity-mark {
+    background: #383238;
+    color: #e0a17d;
+}
+
+html[data-theme="dark"] .order-detail-grid .panel-header h2,
+html[data-theme="dark"] .detail-row,
+html[data-theme="dark"] .order-items-table td strong {
+    color: #eee7e2;
+}
+
+html[data-theme="dark"] .detail-label,
+html[data-theme="dark"] .order-status-form label {
+    color: #bdb4af;
+}
+
+html[data-theme="dark"] .detail-row,
+html[data-theme="dark"] .order-admin-activity-list li {
+    border-color: #414047;
+}
+
 html[data-theme="dark"] .dashboard-welcome h1,
 html[data-theme="dark"] .dashboard-panel-heading h2,
 html[data-theme="dark"] .dashboard-stat-card .stat-value,

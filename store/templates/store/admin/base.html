@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CALE Shop Admin{% endblock %}</title>
-<link rel="stylesheet" href="{% static 'store/admin/css/admin.css' %}?v=5">
-<link rel="stylesheet" href="{% static 'store/css/theme.css' %}?v=3">
-<script src="{% static 'store/js/theme.js' %}?v=1" defer></script></head>
+<link rel="stylesheet" href="{% static 'store/admin/css/admin.css' %}?v=7">
+<link rel="stylesheet" href="{% static 'store/css/theme.css' %}?v=5">
+<script src="{% static 'store/js/theme.js' %}?v=1" defer></script>
+{% block extra_css %}{% endblock %}
+</head>
 <body>
 <div class="admin-layout">
     <aside class="admin-sidebar">
@@ -78,7 +80,7 @@
     </main>
 </div>
 
-<script src="{% static 'store/admin/js/admin.js' %}"></script>
+<script src="{% static 'store/admin/js/admin.js' %}?v=2"></script>
 {% block extra_js %}{% endblock %}
 </body>
 </html>
