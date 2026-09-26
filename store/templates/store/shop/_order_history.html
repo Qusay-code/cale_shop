@@ -1,0 +1,18 @@
+<section class="order-history" aria-label="سجل تحديثات الطلب">
+    <h3>إشعارات وتحديثات الطلب</h3>
+    {% if order.status_history.all %}
+        <ol class="order-history-list">
+            {% for event in order.status_history.all %}
+                <li class="{% if forloop.last %}is-latest{% endif %}">
+                    <span class="order-history-dot" aria-hidden="true"></span>
+                    <div class="order-history-content">
+                        <strong>{% if event.status == "new" %}تم استلام طلبك{% elif event.status == "processing" %}بدأ المتجر تجهيز طلبك{% elif event.status == "delivered" %}تم تسليم طلبك{% else %}تم إلغاء طلبك{% endif %}</strong>
+                        <time datetime="{{ event.created_at|date:'c' }}">{{ event.created_at|date:"Y-m-d H:i" }}</time>
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <p class="order-history-empty">لا توجد تحديثات مسجلة لهذا الطلب بعد.</p>
+    {% endif %}
+</section>

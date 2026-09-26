@@ -716,6 +716,7 @@ def order_success(request, order_id):
             pk=order_id,
             user=request.user,
         )
+        .prefetch_related("status_history")
         .first()
     )
 
@@ -754,7 +755,7 @@ def customer_orders(request):
     orders = (
         Order.objects
         .filter(user=request.user)
-        .prefetch_related("items")
+        .prefetch_related("items", "status_history")
         .order_by("-created_at")
     )
 

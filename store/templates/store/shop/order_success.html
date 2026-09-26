@@ -49,6 +49,7 @@
         <section class="order-tracking-card" aria-labelledby="tracking-title">
             <div class="tracking-heading"><h2 id="tracking-title">حالة الطلب</h2><span>تتحدث الحالة عند تحديثها من المتجر</span></div>
             {% include "store/shop/_order_progress.html" with order=order %}
+            {% include "store/shop/_order_history.html" with order=order %}
         </section>
 
 

@@ -447,6 +447,8 @@ html[data-theme="dark"] .order-tracking-card { background: var(--white); border-
 html[data-theme="dark"] .order-step-marker { background: var(--white); border-color: var(--border); }
 html[data-theme="dark"] .order-progress-cancelled { background: #3b2526; color: #ffaaa1; }
 html[data-theme="dark"] .order-progress-cancel-icon { background: #a5362c; color: #fff; }
+html[data-theme="dark"] .order-history-dot { background: var(--white); border-color: var(--border); }
+html[data-theme="dark"] .order-history-list li.is-latest .order-history-dot { background: var(--accent-color); border-color: var(--accent-color); }
 
 html[data-theme="dark"] .hero-button.secondary,
 html[data-theme="dark"] .continue-shopping,

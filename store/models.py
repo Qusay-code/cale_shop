@@ -201,6 +201,34 @@ class Order(models.Model):
         return f"طلب #{self.pk} - {self.full_name}"
 
 
+class OrderStatusHistory(models.Model):
+    """A timestamped status update shown to the customer and store staff."""
+
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="status_history",
+        verbose_name="الطلب",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Order.Status.choices,
+        verbose_name="حالة الطلب",
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاريخ ووقت التحديث",
+    )
+
+    class Meta:
+        ordering = ["created_at", "pk"]
+        verbose_name = "تحديث حالة طلب"
+        verbose_name_plural = "تحديثات حالات الطلبات"
+
+    def __str__(self):
+        return f"طلب #{self.order_id}: {self.get_status_display()}"
+
+
 class OrderItem(models.Model):
     """
     Represents one product line inside an order.

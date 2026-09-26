@@ -13,7 +13,7 @@ Centralizing these rules in a service layer makes the workflow:
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from ..models import Order, Product
+from ..models import Order, OrderStatusHistory, Product
 
 
 @transaction.atomic
@@ -169,6 +169,10 @@ def change_order_status(order_id, new_status):
             "status",
             "updated_at",
         ]
+    )
+    OrderStatusHistory.objects.create(
+        order=order,
+        status=new_status,
     )
 
     return order

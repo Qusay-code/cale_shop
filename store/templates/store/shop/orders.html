@@ -53,6 +53,7 @@
 
                         {% include "store/shop/_order_progress.html" with order=order %}
                         <p class="order-updated-at">آخر تحديث: {{ order.updated_at|date:"Y-m-d H:i" }}</p>
+                        {% include "store/shop/_order_history.html" with order=order %}
 
                         <div class="order-card-info">
 

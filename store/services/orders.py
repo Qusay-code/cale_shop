@@ -18,7 +18,7 @@ orders.
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from ..models import CartItem, Order, OrderItem, Product
+from ..models import CartItem, Order, OrderItem, OrderStatusHistory, Product
 
 
 @transaction.atomic
@@ -113,6 +113,10 @@ def create_order_from_cart(
         address=address,
         notes=notes,
         payment_method=payment_method,
+        status=Order.Status.NEW,
+    )
+    OrderStatusHistory.objects.create(
+        order=order,
         status=Order.Status.NEW,
     )
 

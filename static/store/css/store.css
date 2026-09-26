@@ -3695,3 +3695,15 @@ input {
 .order-progress-cancel-icon { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: #a5362c; color: #fff; font-size: 1.4rem; }
 .order-progress-cancelled div { display: flex; flex-direction: column; gap: 3px; }
 .order-progress-cancelled div span { font-size: .88rem; }
+.order-history { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+.order-history h3 { margin: 0 0 15px; font-size: 1rem; }
+.order-history-list { list-style: none; margin: 0; padding: 0; }
+.order-history-list li { position: relative; display: flex; gap: 12px; padding: 0 0 17px; color: var(--muted-color); }
+.order-history-list li:not(:last-child)::before { content: ""; position: absolute; top: 14px; right: 5px; bottom: -1px; width: 2px; background: var(--border-color); }
+.order-history-dot { z-index: 1; flex: 0 0 12px; width: 12px; height: 12px; margin-top: 4px; border: 2px solid var(--border-color); border-radius: 50%; background: #fff; }
+.order-history-list li.is-latest { color: var(--text-color); }
+.order-history-list li.is-latest .order-history-dot { border-color: var(--accent-color); background: var(--accent-color); }
+.order-history-content { display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px 14px; }
+.order-history-content strong { font-size: .9rem; }
+.order-history-content time { font-size: .8rem; color: var(--muted-color); direction: ltr; }
+.order-history-empty { margin: 0; color: var(--muted-color); font-size: .88rem; }
