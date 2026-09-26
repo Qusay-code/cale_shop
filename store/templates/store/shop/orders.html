@@ -51,6 +51,8 @@
 
                         </div>
 
+                        {% include "store/shop/_order_progress.html" with order=order %}
+                        <p class="order-updated-at">آخر تحديث: {{ order.updated_at|date:"Y-m-d H:i" }}</p>
 
                         <div class="order-card-info">
 
@@ -87,7 +89,7 @@
                                 href="{% url 'store:order_success' order.id %}"
                                 class="order-details-button"
                             >
-                                عرض تفاصيل الطلب
+                                متابعة الطلب
                             </a>
 
                         </div>

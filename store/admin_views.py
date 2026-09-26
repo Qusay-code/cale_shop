@@ -556,6 +556,7 @@ def order_detail(request, pk):
         },
         Order.Status.PROCESSING: {
             Order.Status.DELIVERED,
+            Order.Status.CANCELLED,
         },
         Order.Status.DELIVERED: set(),
         Order.Status.CANCELLED: set(),

@@ -3676,3 +3676,22 @@ input {
         font-size: 22px;
     }
 }
+
+/* Customer order tracking */
+.order-tracking-card { max-width: 900px; margin: 0 auto 35px; padding: 25px 30px; background: #fff; border: 1px solid var(--border-color); border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, .04); }
+.tracking-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 22px; }
+.tracking-heading h2 { margin: 0; font-size: 1.2rem; }
+.tracking-heading > span, .order-updated-at { color: var(--muted-color); font-size: .85rem; }
+.order-updated-at { margin: 10px 0 0; }
+.order-progress-steps { display: grid; grid-template-columns: repeat(3, 1fr); list-style: none; padding: 0; margin: 0; }
+.order-progress-steps li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 9px; text-align: center; color: var(--muted-color); }
+.order-progress-steps li:not(:last-child)::after { content: ""; position: absolute; top: 17px; right: calc(50% + 23px); left: calc(-50% + 23px); height: 3px; background: var(--border-color); }
+.order-step-marker { z-index: 1; display: grid; width: 36px; height: 36px; place-items: center; border: 2px solid var(--border-color); border-radius: 50%; background: #fff; font-weight: 800; }
+.order-progress-steps li.is-complete { color: var(--accent-color); }
+.order-progress-steps li.is-complete .order-step-marker { border-color: var(--accent-color); background: var(--accent-color); color: #fff; }
+.order-progress-steps li.is-complete:not(:last-child)::after { background: var(--accent-color); }
+.order-progress-steps li.is-current .order-step-label { font-weight: 800; color: var(--text-color); }
+.order-progress-cancelled { display: flex; align-items: center; gap: 13px; padding: 15px; border-radius: 12px; background: #fff1ef; color: #a5362c; }
+.order-progress-cancel-icon { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: #a5362c; color: #fff; font-size: 1.4rem; }
+.order-progress-cancelled div { display: flex; flex-direction: column; gap: 3px; }
+.order-progress-cancelled div span { font-size: .88rem; }

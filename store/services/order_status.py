@@ -33,7 +33,7 @@ def change_order_status(order_id, new_status):
         - Orders cannot move backwards in the workflow.
         - DELIVERED orders are final.
         - CANCELLED orders are final.
-        - Stock is restored only for NEW -> CANCELLED.
+        - Stock is restored when a NEW or PROCESSING order is cancelled.
         - Cancelling an already cancelled order cannot restore stock
           a second time.
 
@@ -92,7 +92,7 @@ def change_order_status(order_id, new_status):
     #     PROCESSING or CANCELLED
     #
     # PROCESSING:
-    #     DELIVERED
+    #     DELIVERED or CANCELLED
     #
     # DELIVERED:
     #     Final state
@@ -106,6 +106,7 @@ def change_order_status(order_id, new_status):
         },
         Order.Status.PROCESSING: {
             Order.Status.DELIVERED,
+            Order.Status.CANCELLED,
         },
         Order.Status.DELIVERED: set(),
         Order.Status.CANCELLED: set(),
@@ -121,12 +122,12 @@ def change_order_status(order_id, new_status):
             f"«{status_labels.get(new_status, new_status)}»."
         )
 
-    # Restore inventory only for the exact NEW -> CANCELLED transition.
+    # Restore inventory when a NEW or PROCESSING order is cancelled.
     #
     # Because this condition can only be true once for an order,
     # the same order cannot restore its stock multiple times.
     if (
-        old_status == Order.Status.NEW
+        old_status in {Order.Status.NEW, Order.Status.PROCESSING}
         and new_status == Order.Status.CANCELLED
     ):
         items = (

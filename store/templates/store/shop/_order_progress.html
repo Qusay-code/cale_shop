@@ -1,0 +1,14 @@
+{% if order.status == "cancelled" %}
+    <div class="order-progress order-progress-cancelled" aria-label="حالة الطلب: ملغي">
+        <span class="order-progress-cancel-icon" aria-hidden="true">×</span>
+        <div><strong>تم إلغاء الطلب</strong><span>إذا كنت تعتقد أن هذا خطأ، تواصل معنا.</span></div>
+    </div>
+{% else %}
+    <div class="order-progress" aria-label="تقدم الطلب">
+        <ol class="order-progress-steps">
+            <li class="{% if order.status == 'new' or order.status == 'processing' or order.status == 'delivered' %}is-complete{% endif %} {% if order.status == 'new' %}is-current{% endif %}"><span class="order-step-marker" aria-hidden="true">1</span><span class="order-step-label">تم استلام الطلب</span></li>
+            <li class="{% if order.status == 'processing' or order.status == 'delivered' %}is-complete{% endif %} {% if order.status == 'processing' %}is-current{% endif %}"><span class="order-step-marker" aria-hidden="true">2</span><span class="order-step-label">قيد التجهيز</span></li>
+            <li class="{% if order.status == 'delivered' %}is-complete is-current{% endif %}"><span class="order-step-marker" aria-hidden="true">3</span><span class="order-step-label">تم التسليم</span></li>
+        </ol>
+    </div>
+{% endif %}

@@ -172,3 +172,6 @@
         width: 100%;
     }
 }
+
+.order-updated-at { margin: 12px 0 0; color: var(--muted-color); font-size: .82rem; }
+.order-card .order-progress { margin-top: 20px; }

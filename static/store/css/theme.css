@@ -443,6 +443,10 @@ html[data-theme="dark"] .success-icon,
 html[data-theme="dark"] .order-status {
     background-color: #302a29;
 }
+html[data-theme="dark"] .order-tracking-card { background: var(--white); border-color: var(--border); }
+html[data-theme="dark"] .order-step-marker { background: var(--white); border-color: var(--border); }
+html[data-theme="dark"] .order-progress-cancelled { background: #3b2526; color: #ffaaa1; }
+html[data-theme="dark"] .order-progress-cancel-icon { background: #a5362c; color: #fff; }
 
 html[data-theme="dark"] .hero-button.secondary,
 html[data-theme="dark"] .continue-shopping,
